@@ -1316,7 +1316,7 @@ html.input-keys .for-keys {
 }
 
 /* The Cyclops (game/cyclops.js): placed and turned by the game, over the
-   bacteria and the amoebas it's chasing. Its feelers twitch. */
+   bacteria and the amoebas it's chasing. Its feelers sway gently. */
 .cyclops {
   position: absolute;
   z-index: 2;
@@ -1345,21 +1345,21 @@ html.input-keys .for-keys {
 .cyclops .antennae {
   transform-box: fill-box;
   transform-origin: 50% 100%;
-  animation: twitch 0.9s ease-in-out infinite;
+  animation: sway 1.4s ease-in-out infinite;
 }
 
-@keyframes twitch {
+@keyframes sway {
   0%,
   100% {
     transform: scaleX(1);
   }
 
-  30% {
-    transform: scaleX(0.92);
+  50% {
+    transform: scaleX(0.95);
   }
 }
 
-/* For anyone who'd rather not have motion: no jiggling or twitching. */
+/* For anyone who'd rather not have motion: no jiggling or swaying. */
 @media (prefers-reduced-motion: reduce) {
   .bacterium,
   .cyclops .antennae {

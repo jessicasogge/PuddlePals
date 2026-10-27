@@ -132,6 +132,10 @@ describe('a level', () => {
     expect(document.querySelector('.cell-count').textContent).toBe(`Level 2 · 2 / ${LEVELS[1].target} amoebas`);
   });
 
+  it('has one Cyclops per level number', () => {
+    expect(LEVELS.map((level) => level.cyclops)).toEqual(LEVELS.map((_, i) => i + 1));
+  });
+
   it("puts the level's Cyclopes in the puddle", () => {
     start({ level: 3 });
     expect(cyclopsAround).toHaveBeenCalledWith(document.querySelector('.water'), LEVELS[2].cyclops, expect.any(Function));

@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-// The Cyclops (cyclops.js): drawn, placed, hopping after its prey, staying
+// The Cyclops (cyclops.js): drawn, placed, swimming after its prey, staying
 // in the water, and stopping to digest.
 import { beforeEach, describe, expect, it } from 'vitest';
 import { CYCLOPS, SPECIES } from '../public/game/config.js';
@@ -14,7 +14,7 @@ beforeEach(() => {
 const still = () => 0.5; // no weaving: (0.5 - 0.5) * 6 = 0
 
 describe('its drawing', () => {
-  it('has one red eye, feelers that twitch, and is hidden from screen readers', () => {
+  it('has one red eye, feelers that sway, and is hidden from screen readers', () => {
     const svg = cyclopsDrawing();
     expect(svg.getAttribute('aria-hidden')).toBe('true');
     expect(svg.querySelectorAll('.cyclops-face circle[fill="#dc2626"]')).toHaveLength(1);
@@ -47,13 +47,20 @@ describe('a Cyclops', () => {
     expect(CYCLOPS.SIZE).toBeGreaterThan(SPECIES.amy.size);
   });
 
-  it('kicks quickly, then glides, and averages its usual speed', () => {
+  it('speeds up and eases off smoothly through each stroke, averaging its usual speed', () => {
     const cyclops = makeCyclops(water, { fx: 0, fy: 0, heading: 0, random: () => 0 });
-    expect(cyclops.pace()).toBe(CYCLOPS.KICK_SPEED);
-    cyclops.hop = 0.9;
-    expect(cyclops.pace()).toBeLessThan(1);
-    const glide = cyclops.pace();
-    expect(CYCLOPS.KICK * CYCLOPS.KICK_SPEED + (1 - CYCLOPS.KICK) * glide).toBeCloseTo(1);
+    const paces = [];
+    for (let i = 0; i < 100; i++) {
+      cyclops.stroke = i / 100;
+      paces.push(cyclops.pace());
+    }
+    expect(Math.max(...paces)).toBeCloseTo(1 + CYCLOPS.SURGE);
+    expect(Math.min(...paces)).toBeCloseTo(1 - CYCLOPS.SURGE);
+    expect(Math.min(...paces)).toBeGreaterThan(0); // never stops dead
+    expect(paces.reduce((a, b) => a + b) / paces.length).toBeCloseTo(1);
+    // No sudden jumps: from one moment of a stroke to the next, the speed
+    // barely changes.
+    for (let i = 1; i < paces.length; i++) expect(Math.abs(paces[i] - paces[i - 1])).toBeLessThan(0.02);
   });
 
   it('swims toward its prey', () => {
@@ -120,7 +127,7 @@ describe('the Cyclopes on a level', () => {
 
   it('use their own random numbers unless given some', () => {
     expect(cyclopsAround(water, 1)).toHaveLength(1);
-    expect(makeCyclops(water, { fx: 0, fy: 0, heading: 0 }).hop).toBeLessThan(1);
+    expect(makeCyclops(water, { fx: 0, fy: 0, heading: 0 }).stroke).toBeLessThan(1);
   });
 });
 

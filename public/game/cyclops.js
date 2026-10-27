@@ -1,6 +1,6 @@
 // The Cyclops: a copepod, a tiny crustacean with one red eye (like the
 // Cyclops of Greek myth) that hunts protists in ponds and puddles. It's much
-// bigger than Amy, swims in hops (a quick kick, then a glide), and goes after
+// bigger than Amy, swims smoothly in gentle strokes, and goes after
 // her offspring unless she comes too close. Catching Amy is game over; any
 // offspring it bumps into, it eats.
 import { CYCLOPS } from './config.js';
@@ -76,7 +76,7 @@ export function makeCyclops(water, { fx, fy, heading, random = Math.random }) {
     fy,
     heading,
     wander: 0,
-    hop: random(), // how far through its current hop, 0 to 1, so they don't all kick together
+    stroke: random(), // how far through its current stroke, 0 to 1, so they don't all swim in step
     full: 0, // ms left digesting its last meal, sitting still
 
     // Its outline as circles [fx, fy, r], in fractions of the puddle radius.
@@ -87,12 +87,9 @@ export function makeCyclops(water, { fx, fy, heading, random = Math.random }) {
     // Its head, the part that eats, as [fx, fy, r].
     head: () => cyclops.body()[HEAD],
 
-    // How fast it's going right now, as a share of its average speed: quick
-    // while it kicks, slow while it glides.
-    pace() {
-      const glide = (1 - CYCLOPS.KICK * CYCLOPS.KICK_SPEED) / (1 - CYCLOPS.KICK);
-      return cyclops.hop < CYCLOPS.KICK ? CYCLOPS.KICK_SPEED : glide;
-    },
+    // How fast it's going right now, as a share of its average speed: it
+    // speeds up and eases off smoothly through each stroke, never stopping.
+    pace: () => 1 + CYCLOPS.SURGE * Math.sin(2 * Math.PI * cyclops.stroke),
 
     // It just ate: stop to digest for a while.
     eat() {
@@ -109,7 +106,7 @@ export function makeCyclops(water, { fx, fy, heading, random = Math.random }) {
         if (cyclops.full <= 0) el.classList.remove('full');
         return;
       }
-      cyclops.hop = (cyclops.hop + (seconds * 1000) / CYCLOPS.HOP_MS) % 1;
+      cyclops.stroke = (cyclops.stroke + (seconds * 1000) / CYCLOPS.STROKE_MS) % 1;
       cyclops.wander += (random() - 0.5) * 6 * seconds;
       cyclops.wander = Math.max(-CYCLOPS.WANDER, Math.min(CYCLOPS.WANDER, cyclops.wander));
       // With nothing to chase, it drifts: on the way it's facing, or back

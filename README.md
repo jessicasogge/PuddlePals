@@ -13,9 +13,9 @@ A cute microbiology game for the browser, about **protists**: the tiny living th
 
 Use the arrow keys, or on a touch screen, touch the puddle and slide your finger. Every time an amoeba eats a bacterium, it divides in two. The amoebas left behind eat and divide too.
 
-Watch out for the **Cyclops**: a copepod, a tiny one-eyed crustacean that hunts protists. It's much bigger than your pal and swims in hops. It goes after your offspring, and stops to digest each one it eats, so the amoebas you leave behind buy you time. If your pal comes too close, it comes after her. If it catches her, it's game over.
+Watch out for the **Cyclops**: a copepod, a tiny one-eyed crustacean that hunts protists. It's bigger than your pal and swims smoothly after its prey. It goes after your offspring, and stops to digest each one it eats, so the amoebas you leave behind buy you time. If your pal comes too close, it comes after her. If it catches her, it's game over.
 
-There are five levels. Each one needs a bigger colony (4, 8, 12, 16, then 24 amoebas), and levels 3 and 5 add another Cyclops. The numbers are in `public/game/config.js` (`LEVELS`, `CYCLOPS` and `GAME`).
+There are five levels. Each one needs a bigger colony (4, 8, 12, 16, then 24 amoebas), with one Cyclops on level 1, two on level 2, and so on up to five on level 5. The numbers are in `public/game/config.js` (`LEVELS`, `CYCLOPS` and `GAME`).
 
 ## The pals
 

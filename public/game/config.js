@@ -27,27 +27,26 @@ export const SPECIES = {
   },
 };
 
-// Each level needs a bigger colony, and some add another Cyclops.
+// Each level needs a bigger colony, and has one Cyclops per level number.
 export const LEVELS = [
   { target: 4, cyclops: 1 },
-  { target: 8, cyclops: 1 },
-  { target: 12, cyclops: 2 },
-  { target: 16, cyclops: 2 },
-  { target: 24, cyclops: 3 },
+  { target: 8, cyclops: 2 },
+  { target: 12, cyclops: 3 },
+  { target: 16, cyclops: 4 },
+  { target: 24, cyclops: 5 },
 ];
 
 // The Cyclops (game/cyclops.js): a copepod, a tiny one-eyed crustacean that
-// hunts protists. Much bigger than Amy, slower on average, and it swims in
-// hops: a quick kick, then a glide.
+// hunts protists. Bigger than Amy and slower on average. Its speed rises
+// and falls gently as it swims, one stroke after another.
 export const CYCLOPS = {
   // How wide it's drawn, as a percent of the puddle (Amy is 9). It's 1.4 times
   // as long, about as much room as a PetriPals antibiotic disk with a
   // medium zone of inhibition around it.
   SIZE: 10,
   SPEED: 0.28, // average speed, as a fraction of the puddle radius per second
-  HOP_MS: 900, // one kick and glide
-  KICK: 0.3, // the share of each hop spent kicking
-  KICK_SPEED: 1.8, // how fast it kicks, as a multiple of its average speed
+  STROKE_MS: 1400, // one stroke: speeding up, then easing off
+  SURGE: 0.25, // how much faster (and slower) than average it goes in a stroke
   TURN: 2.4, // how fast it can turn, in radians per second
   WANDER: 0.6, // how much it weaves off course, in radians
   // It goes after Amy only when she comes this close (a fraction of the

@@ -2,7 +2,7 @@
 // The Cyclops (cyclops.js): drawn, placed, hopping after its prey, staying
 // in the water, and stopping to digest.
 import { beforeEach, describe, expect, it } from 'vitest';
-import { CYCLOPS } from '../public/game/config.js';
+import { CYCLOPS, SPECIES } from '../public/game/config.js';
 import { cyclopsAround, cyclopsDrawing, makeCyclops, preyFor } from '../public/game/cyclops.js';
 
 let water;
@@ -44,9 +44,10 @@ describe('a Cyclops', () => {
 
   it('is bigger than Amy', () => {
     const cyclops = makeCyclops(water, { fx: 0, fy: 0, heading: 0, random: still });
-    expect(CYCLOPS.SIZE).toBeGreaterThan(13);
+    const amy = SPECIES.amy.size;
+    expect(CYCLOPS.SIZE).toBeGreaterThan(amy);
     const [head] = cyclops.body();
-    expect(head[2] * 2).toBeGreaterThan(0.13 * 2 * 0.6);
+    expect(head[2] * 2).toBeGreaterThan((amy / 100) * 2 * 0.6);
   });
 
   it('kicks quickly, then glides, and averages its usual speed', () => {

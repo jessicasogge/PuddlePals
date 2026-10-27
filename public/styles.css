@@ -951,7 +951,7 @@ body:not(.picker-page) .signature {
 
 .pal-mover {
   grid-area: 1 / 1; /* stack in the puddle center, even after dividing into two */
-  width: 13%;
+  width: 11%; /* her `size` in config.js, which game/cell.js sets */
   position: relative;
   z-index: 1; /* move over the bacteria */
   will-change: transform;

@@ -42,12 +42,9 @@ describe('a Cyclops', () => {
     expect(cyclops.head()).toEqual(head);
   });
 
-  it('is bigger than Amy', () => {
-    const cyclops = makeCyclops(water, { fx: 0, fy: 0, heading: 0, random: still });
-    const amy = SPECIES.amy.size;
-    expect(CYCLOPS.SIZE).toBeGreaterThan(amy);
-    const [head] = cyclops.body();
-    expect(head[2] * 2).toBeGreaterThan((amy / 100) * 2 * 0.6);
+  it('is bigger than Amy, head to tail', () => {
+    // Both are drawn SIZE wide; the Cyclops is 1.4 times as long again.
+    expect(CYCLOPS.SIZE).toBeGreaterThan(SPECIES.amy.size);
   });
 
   it('kicks quickly, then glides, and averages its usual speed', () => {

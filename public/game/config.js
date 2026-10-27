@@ -14,7 +14,7 @@ export const SPECIES = {
     color: '#6d28d9',
     tile: 'rgba(196, 181, 253, 0.45)',
     kind: 'amoeba',
-    size: 11,
+    size: 9, // about as big as the PetriPals bacteria
     body: [
       [0, 0.047, 0.279], // the middle of her
       // her pseudopods
@@ -40,7 +40,10 @@ export const LEVELS = [
 // hunts protists. Much bigger than Amy, slower on average, and it swims in
 // hops: a quick kick, then a glide.
 export const CYCLOPS = {
-  SIZE: 15, // how wide it's drawn, as a percent of the puddle (Amy is 11)
+  // How wide it's drawn, as a percent of the puddle (Amy is 9). It's 1.4 times
+  // as long, about as much room as a PetriPals antibiotic disk with a
+  // medium zone of inhibition around it.
+  SIZE: 10,
   SPEED: 0.28, // average speed, as a fraction of the puddle radius per second
   HOP_MS: 900, // one kick and glide
   KICK: 0.3, // the share of each hop spent kicking

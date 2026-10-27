@@ -886,9 +886,6 @@ body:not(.picker-page) .signature {
   position: relative;
   width: min(600px, 100%);
   margin: 0 auto;
-  /* The bank around the water. The drawing in puddle.html is made to fit
-     exactly this much, so keep it the same on every screen. */
-  padding: 9%;
   /* A finger drags the pal from anywhere on the puddle, bank included
      (game/touch.js): don't scroll or zoom the page, select text, or pop up
      the magnifier or long-press menu instead. */
@@ -898,15 +895,15 @@ body:not(.picker-page) .signature {
   -webkit-touch-callout: none;
 }
 
-/* The puddle's look: its wobbly edge, muddy bank, pebbles and leaf. The
-   game itself happens in the round .water on top. */
+/* The puddle's look: its uneven edge and thin rim of mud. The game itself
+   happens in the round .water on top. */
 .puddle-art {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   overflow: visible;
-  filter: drop-shadow(0 12px 18px rgba(19, 78, 74, 0.18));
+  filter: drop-shadow(0 6px 10px rgba(19, 78, 74, 0.12));
   pointer-events: none;
 }
 
@@ -923,7 +920,7 @@ body:not(.picker-page) .signature {
 @keyframes ripple {
   from {
     transform: scale(0.3);
-    opacity: 0.7;
+    opacity: 0.35;
   }
 
   to {
@@ -934,7 +931,12 @@ body:not(.picker-page) .signature {
 
 .water {
   position: relative;
-  width: 100%;
+  /* The bank around the water, 5% of the puddle on every side. The drawing
+     in puddle.html is made to fit exactly this (margins, unlike padding, are
+     a share of the puddle's own width), so keep it the same on every
+     screen. */
+  width: 90%;
+  margin: 5%;
   aspect-ratio: 1;
   border-radius: 50%;
   display: grid;
@@ -1168,9 +1170,68 @@ html.input-keys .for-keys {
   }
 }
 
-/* Short landscape screens: move the puddle left at full screen height,
-   with the name, cell count and instructions beside it, since dragging
-   steers instead of scrolling. Reduce padding on other pages' cards. */
+/* Side by side: the puddle on the left, as tall as the screen allows, with
+   her name, the count and the directions beside it. On a short landscape
+   phone that keeps the whole puddle on screen; on a computer it lets the
+   puddle be much bigger than it could be with the words underneath. */
+@media (orientation: landscape) and (max-height: 540px), (min-width: 1000px) and (min-height: 560px) {
+  .puddle-shell {
+    width: min(1200px, 100%);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    /* The words beside the puddle stay together in the middle of its height. */
+    grid-template-rows: 1fr auto auto auto auto 1fr;
+    grid-template-areas:
+      'puddle .'
+      'puddle title'
+      'puddle count'
+      'puddle how'
+      'puddle back'
+      'puddle .';
+    align-content: center;
+    column-gap: 1.5rem;
+  }
+
+  .puddle-shell .puddle {
+    grid-area: puddle;
+    align-self: center;
+  }
+
+  .puddle-shell .puddle-title {
+    grid-area: title;
+    margin-bottom: 0;
+  }
+
+  .puddle-shell .cell-count {
+    grid-area: count;
+    margin-top: 0.5rem;
+  }
+
+  .puddle-shell .how-to-play {
+    grid-area: how;
+  }
+
+  .puddle-shell .back-link {
+    grid-area: back;
+    justify-self: center;
+    margin-top: 0.75rem;
+  }
+}
+
+/* On a computer: as big as the screen's height allows (less the room
+   around the card), up to 760px, leaving room beside it for the words.
+   svh is the height with Safari's toolbars showing, so they never hide the
+   bottom of the puddle; vh is for browsers too old to know svh. */
+@media (min-width: 1000px) and (min-height: 560px) {
+  .puddle-shell .puddle {
+    width: min(760px, calc(100vh - 11rem), calc(100vw - 26rem));
+    width: min(760px, calc(100svh - 11rem), calc(100vw - 26rem));
+  }
+}
+
+/* Short landscape screens (a phone turned sideways): the puddle at full
+   screen height, smaller words beside it, and less padding all round.
+   Reduce padding on other pages' cards too. */
 @media (orientation: landscape) and (max-height: 540px) {
   .picker-page {
     padding: 0.75rem 1rem;
@@ -1186,56 +1247,22 @@ html.input-keys .for-keys {
 
   .puddle-shell {
     width: min(1000px, 100%);
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    /* The words beside the puddle stay together in the middle of its height. */
-    grid-template-rows: 1fr auto auto auto auto 1fr;
-    grid-template-areas:
-      'puddle .'
-      'puddle title'
-      'puddle count'
-      'puddle how'
-      'puddle back'
-      'puddle .';
-    align-content: center;
-    column-gap: 1.5rem;
     padding: 0.5rem 1rem 0.5rem 0.5rem;
   }
 
   .puddle-shell .puddle {
-    grid-area: puddle;
-    align-self: center;
-    /* The screen's height, less the padding around the puddle.
-       svh is the height with Safari's toolbars showing, so they never hide
-       the bottom of the puddle; vh is for browsers too old to know svh. */
-    width: min(600px, calc(100vh - 2rem));
-    width: min(600px, calc(100svh - 2rem));
-  }
-
-  .puddle-shell .puddle-title {
-    grid-area: title;
-    margin-bottom: 0;
+    /* The screen's height, less the padding around the puddle. */
+    width: min(720px, calc(100vh - 2rem));
+    width: min(720px, calc(100svh - 2rem));
   }
 
   .puddle-shell .puddle-title .pal-name {
     font-size: 1.6rem;
   }
 
-  .puddle-shell .cell-count {
-    grid-area: count;
-    margin-top: 0.5rem;
-  }
-
   .puddle-shell .how-to-play {
-    grid-area: how;
     font-size: 0.9rem;
     line-height: 1.45;
-  }
-
-  .puddle-shell .back-link {
-    grid-area: back;
-    justify-self: center;
-    margin-top: 0.75rem;
   }
 
   /* The pop-up when you win or lose can be taller than a puddle this small:
@@ -1325,7 +1352,7 @@ html.input-keys .for-keys {
 .cyclops {
   position: absolute;
   z-index: 2;
-  width: 22%;
+  /* Its width is CYCLOPS.SIZE in config.js, set by game/cyclops.js. */
   transform: translate(-50%, -50%) rotate(var(--turn, 0deg));
   pointer-events: none;
   filter: drop-shadow(0 3px 4px rgba(67, 20, 7, 0.3));

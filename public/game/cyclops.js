@@ -67,6 +67,7 @@ export function cyclopsDrawing() {
 export function makeCyclops(water, { fx, fy, heading, random = Math.random }) {
   const el = document.createElement('div');
   el.className = 'cyclops';
+  el.style.width = `${CYCLOPS.SIZE}%`;
   el.appendChild(cyclopsDrawing());
   water.appendChild(el);
   const cyclops = {

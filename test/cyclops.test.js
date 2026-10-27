@@ -30,6 +30,7 @@ describe('a Cyclops', () => {
     expect(cyclops.el.style.top).toBe('25%');
     // Drawn head up, so facing right (0) is a quarter turn.
     expect(cyclops.el.style.getPropertyValue('--turn')).toBe('90deg');
+    expect(cyclops.el.style.width).toBe(`${CYCLOPS.SIZE}%`);
   });
 
   it('has its head in front and its body behind, and its head is the biggest part', () => {

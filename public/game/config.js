@@ -40,7 +40,7 @@ export const LEVELS = [
 // hunts protists. Much bigger than Amy, slower on average, and it swims in
 // hops: a quick kick, then a glide.
 export const CYCLOPS = {
-  SIZE: 22, // how wide it's drawn, as a percent of the puddle
+  SIZE: 18, // how wide it's drawn, as a percent of the puddle (Amy is 13)
   SPEED: 0.28, // average speed, as a fraction of the puddle radius per second
   HOP_MS: 900, // one kick and glide
   KICK: 0.3, // the share of each hop spent kicking

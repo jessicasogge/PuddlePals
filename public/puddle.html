@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PuddlePals | Puddle</title>
+    <meta name="description" content="Grow your amoeba colony in a puddle: eat bacteria to divide and keep away from the hungry Cyclops." />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <meta name="apple-mobile-web-app-title" content="PuddlePals" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="picker-page">
+    <!-- "Filling the puddle…" covers the page until game/puddle.js has
+         filled it in (see game/loading.js). -->
+    <div class="loading-overlay arriving">
+      <div class="loading-card" role="status">
+        <span class="loading-cells" aria-hidden="true"><span></span><span></span></span>
+        <span class="loading-text">Filling the puddle…</span>
+      </div>
+    </div>
+    <main class="picker-shell puddle-shell">
+      <header class="puddle-title">
+        <h1 class="pal-name"></h1>
+        <p class="species"><span class="species-name"></span></p>
+      </header>
+      <div class="puddle">
+        <!-- The puddle: a muddy bank around wobbly-edged water, with pebbles,
+             grass, a floating leaf and the sky reflected in it. Just for
+             looks: the game happens in .water, the round part in the middle. -->
+        <svg class="puddle-art" viewBox="-122 -122 244 244" aria-hidden="true">
+          <defs>
+            <radialGradient id="mud" cx="50%" cy="50%" r="50%">
+              <stop offset="80%" stop-color="#7c5a3a" />
+              <stop offset="100%" stop-color="#a47b52" />
+            </radialGradient>
+            <radialGradient id="pond" cx="44%" cy="40%" r="62%">
+              <stop offset="0%" stop-color="#9bd6f5" />
+              <stop offset="70%" stop-color="#5aaee6" />
+              <stop offset="100%" stop-color="#4f7f99" />
+            </radialGradient>
+          </defs>
+          <path class="bank" d="M117.8 0.0 C117.9 4.1 117.6 8.2 117.1 12.3 C116.6 16.4 115.9 20.4 114.9 24.4 C113.9 28.4 112.7 32.3 111.3 36.2 C109.8 40.0 108.2 43.7 106.2 47.3 C104.3 50.9 102.1 54.3 99.7 57.6 C97.3 60.8 94.7 63.9 91.9 66.8 C89.2 69.7 86.2 72.3 83.2 74.9 C80.2 77.4 77.0 79.8 73.9 82.1 C70.8 84.4 67.7 86.6 64.5 88.8 C61.3 91.0 58.2 93.1 54.9 95.1 C51.7 97.2 48.4 99.3 45.0 101.1 C41.6 103.0 38.1 104.8 34.5 106.2 C30.9 107.7 27.2 109.0 23.4 109.9 C19.6 110.9 15.6 111.5 11.7 111.8 C7.9 112.1 3.9 112.0 0.0 111.8 C-3.9 111.5 -7.8 110.9 -11.6 110.3 C-15.4 109.6 -19.2 108.8 -23.0 108.0 C-26.7 107.2 -30.5 106.3 -34.2 105.4 C-38.0 104.5 -41.9 103.7 -45.7 102.6 C-49.5 101.6 -53.4 100.6 -57.3 99.2 C-61.1 97.8 -65.0 96.3 -68.6 94.4 C-72.2 92.5 -75.8 90.3 -79.0 87.7 C-82.1 85.1 -85.1 82.1 -87.7 79.0 C-90.3 75.8 -92.5 72.2 -94.4 68.6 C-96.3 65.0 -97.8 61.1 -99.2 57.3 C-100.6 53.5 -101.7 49.6 -102.8 45.8 C-103.9 41.9 -104.8 38.1 -105.7 34.3 C-106.6 30.6 -107.6 26.8 -108.4 23.0 C-109.3 19.3 -110.1 15.5 -110.8 11.6 C-111.5 7.8 -112.1 3.9 -112.4 0.0 C-112.7 -3.9 -112.8 -7.9 -112.6 -11.8 C-112.3 -15.8 -111.8 -19.7 -110.9 -23.6 C-110.0 -27.4 -108.8 -31.2 -107.3 -34.9 C-105.9 -38.5 -104.1 -42.1 -102.3 -45.5 C-100.4 -49.0 -98.3 -52.3 -96.2 -55.5 C-94.1 -58.8 -91.8 -61.9 -89.4 -65.0 C-87.1 -68.1 -84.7 -71.1 -82.1 -74.0 C-79.6 -76.9 -77.0 -79.7 -74.2 -82.4 C-71.4 -85.0 -68.5 -87.6 -65.4 -90.0 C-62.4 -92.4 -59.1 -94.7 -55.9 -96.7 C-52.6 -98.8 -49.1 -100.7 -45.6 -102.5 C-42.2 -104.3 -38.6 -105.9 -34.9 -107.5 C-31.3 -109.1 -27.6 -110.5 -23.8 -111.9 C-20.0 -113.3 -16.1 -114.6 -12.2 -115.7 C-8.2 -116.8 -4.1 -117.8 -0.0 -118.5 C4.1 -119.1 8.4 -119.5 12.5 -119.3 C16.7 -119.2 20.9 -118.4 24.9 -117.4 C29.0 -116.4 33.1 -115.1 36.8 -113.2 C40.5 -111.3 44.0 -108.6 47.1 -105.9 C50.3 -103.1 53.2 -99.9 55.9 -96.7 C58.5 -93.6 60.9 -90.2 63.2 -87.0 C65.5 -83.8 67.6 -80.6 69.9 -77.6 C72.2 -74.7 74.4 -71.9 76.8 -69.1 C79.2 -66.4 81.8 -63.9 84.4 -61.3 C87.0 -58.7 89.9 -56.2 92.6 -53.5 C95.4 -50.7 98.3 -48.0 100.8 -44.9 C103.4 -41.8 105.9 -38.6 108.0 -35.1 C110.1 -31.6 112.0 -27.9 113.4 -24.1 C114.9 -20.3 116.0 -16.3 116.7 -12.3 C117.4 -8.2 117.7 -4.1 117.8 0.0 Z" fill="url(#mud)" />
+          <path class="pond" d="M109.7 0.0 C109.6 3.8 109.2 7.6 108.7 11.4 C108.2 15.2 107.5 19.0 106.7 22.7 C105.8 26.4 104.9 30.1 103.7 33.7 C102.6 37.3 101.3 40.9 99.7 44.4 C98.2 47.9 96.4 51.3 94.4 54.5 C92.4 57.8 90.2 60.9 87.8 63.8 C85.4 66.7 82.8 69.5 80.0 72.1 C77.3 74.7 74.4 77.1 71.5 79.4 C68.5 81.7 65.5 83.9 62.4 85.9 C59.4 88.0 56.2 90.0 53.0 91.9 C49.8 93.7 46.6 95.5 43.2 97.0 C39.8 98.6 36.4 100.0 32.9 101.1 C29.3 102.2 25.7 103.1 22.0 103.7 C18.4 104.2 14.7 104.5 11.0 104.5 C7.3 104.5 3.6 104.1 0.0 103.6 C-3.6 103.2 -7.2 102.5 -10.7 101.8 C-14.2 101.2 -17.7 100.4 -21.2 99.7 C-24.7 99.1 -28.2 98.5 -31.8 97.9 C-35.4 97.3 -39.1 96.8 -42.8 96.1 C-46.5 95.5 -50.4 94.9 -54.2 93.9 C-58.0 92.9 -61.9 91.8 -65.6 90.3 C-69.2 88.7 -72.9 86.8 -76.1 84.5 C-79.4 82.3 -82.4 79.5 -85.0 76.5 C-87.5 73.5 -89.7 70.0 -91.6 66.5 C-93.4 63.0 -94.8 59.2 -96.0 55.4 C-97.2 51.6 -98.0 47.7 -98.7 44.0 C-99.5 40.2 -100.0 36.4 -100.6 32.7 C-101.2 29.0 -101.7 25.3 -102.1 21.7 C-102.6 18.1 -103.1 14.5 -103.5 10.9 C-103.8 7.3 -104.2 3.6 -104.3 0.0 C-104.4 -3.6 -104.4 -7.3 -104.1 -10.9 C-103.9 -14.6 -103.4 -18.2 -102.7 -21.8 C-101.9 -25.4 -100.9 -29.0 -99.8 -32.4 C-98.6 -35.9 -97.2 -39.3 -95.8 -42.6 C-94.3 -46.0 -92.6 -49.3 -90.9 -52.5 C-89.2 -55.7 -87.3 -58.9 -85.3 -62.0 C-83.3 -65.1 -81.3 -68.2 -79.0 -71.1 C-76.7 -74.1 -74.3 -77.0 -71.7 -79.6 C-69.1 -82.3 -66.3 -84.9 -63.3 -87.2 C-60.4 -89.5 -57.2 -91.6 -54.0 -93.5 C-50.7 -95.3 -47.3 -97.0 -43.8 -98.5 C-40.4 -99.9 -36.8 -101.2 -33.3 -102.4 C-29.7 -103.6 -26.1 -104.6 -22.5 -105.6 C-18.8 -106.6 -15.1 -107.6 -11.4 -108.4 C-7.6 -109.2 -3.8 -109.9 -0.0 -110.4 C3.8 -110.8 7.8 -111.1 11.7 -111.0 C15.5 -110.9 19.5 -110.5 23.3 -109.6 C27.1 -108.7 30.8 -107.4 34.3 -105.7 C37.8 -104.0 41.2 -101.8 44.2 -99.4 C47.3 -97.0 50.1 -94.2 52.8 -91.4 C55.5 -88.7 57.8 -85.7 60.2 -82.9 C62.6 -80.0 64.8 -77.2 67.1 -74.5 C69.4 -71.8 71.7 -69.2 74.1 -66.7 C76.5 -64.2 79.0 -61.8 81.6 -59.3 C84.1 -56.7 86.8 -54.3 89.4 -51.6 C91.9 -48.9 94.5 -46.1 96.8 -43.1 C99.0 -40.1 101.2 -36.8 102.9 -33.4 C104.7 -30.1 106.1 -26.4 107.2 -22.8 C108.3 -19.1 108.9 -15.3 109.4 -11.5 C109.8 -7.7 109.8 -3.8 109.7 0.0 Z" fill="url(#pond)" stroke="#5b4630" stroke-width="2" stroke-opacity="0.5" />
+          <!-- the sky, reflected -->
+          <ellipse cx="-45" cy="-55" rx="38" ry="12" transform="rotate(-28 -45 -55)" fill="white" opacity="0.28" />
+          <ellipse cx="-12" cy="-78" rx="14" ry="4" transform="rotate(-20 -12 -78)" fill="white" opacity="0.3" />
+          <!-- ripples -->
+          <g class="ripples" fill="none" stroke="white" stroke-width="1.2">
+            <circle class="ripple" cx="55" cy="40" r="10" />
+            <circle class="ripple late" cx="-60" cy="50" r="10" />
+          </g>
+          <!-- a leaf floating on the water -->
+          <g transform="translate(70 -78) rotate(35)">
+            <path d="M-14 0 C-8 -9 8 -9 14 0 C8 9 -8 9 -14 0 Z" fill="#65a30d" stroke="#3f6212" stroke-width="1.5" />
+            <path d="M-14 0 L17 0" stroke="#3f6212" stroke-width="1.2" />
+          </g>
+          <!-- pebbles and grass on the bank -->
+          <g fill="#a8a29e" stroke="#57534e" stroke-width="1">
+            <ellipse cx="107.1" cy="39" rx="5" ry="3.5" />
+            <ellipse cx="-89.6" cy="75.1" rx="4" ry="3" />
+            <ellipse cx="-38" cy="-104.5" rx="4.5" ry="3" />
+          </g>
+          <g fill="#4d7c0f">
+            <path d="M24.5 110 l2 -11 l2 9 l2 -12 l2 12 l2 -8 l1 10 Z" />
+            <path d="M-107 -36 l2 -10 l2 8 l2 -11 l2 11 l2 -7 l1 9 Z" />
+            <path d="M74.6 -63 l2 -10 l2 8 l2 -11 l2 11 l2 -7 l1 9 Z" />
+          </g>
+        </svg>
+        <div class="water">
+          <!-- Every pal's drawing goes in here, hidden; puddle.js shows the one picked -->
+          <div class="pal-mover"></div>
+        </div>
+        <div class="win-banner" role="status" hidden>
+          <h2>You won!</h2>
+          <p class="win-message"></p>
+          <p class="fun-fact" hidden><strong>Did you know?</strong> <span class="fun-fact-text"></span></p>
+          <div class="banner-buttons">
+            <button class="pick-btn play-again" type="button">Play again</button>
+            <button class="pick-btn start-over" type="button" hidden>Start over</button>
+            <button class="pick-btn back-to-picker" type="button">Pick a pal</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="cell-count" aria-live="polite">Level 1 · 1 / 4 amoebas</p>
+
+      <p class="how-to-play">
+        <span class="for-keys">Use the arrow keys to move.</span>
+        <span class="for-touch">Touch the puddle and slide your finger to move.</span>
+        Eat bacteria and grow to <span class="target-cells">4</span> amoebas.<br />
+        Every amoeba that eats divides in two. Watch out for the Cyclops! It
+        gobbles up amoebas it bumps into, and if it catches
+        <span class="pal-named">her</span>, it's game over.
+      </p>
+
+      <a class="back-link" href="./pal-picker.html">Pick a different pal</a>
+    </main>
+    <footer class="signature">jsogge 2026</footer>
+    <script type="module" src="./game/puddle.js"></script>
+  </body>
+</html>

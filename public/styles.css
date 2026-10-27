@@ -864,3 +864,516 @@ body:not(.picker-page) .signature {
   }
 }
 
+
+/* ---- The puddle (puddle.html): the game page. ---- */
+
+.puddle-shell {
+  width: min(760px, 100%);
+  /* Nothing on the game page needs selecting, and on an iPhone a finger
+     that slips off the puddle onto the words around it would otherwise bring
+     up the text magnifier mid-game. */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* The water keeps itself square (below) and the muddy bank wraps around
+   it. Don't size the water from the puddle's height instead: Safari (so
+   every browser on an iPhone) can ignore a percentage height when the
+   parent's height only comes from aspect-ratio, which squashes it into an
+   oval. */
+.puddle {
+  position: relative;
+  width: min(600px, 100%);
+  margin: 0 auto;
+  /* The bank around the water. The drawing in puddle.html is made to fit
+     exactly this much, so keep it the same on every screen. */
+  padding: 9%;
+  /* A finger drags the pal from anywhere on the puddle, bank included
+     (game/touch.js): don't scroll or zoom the page, select text, or pop up
+     the magnifier or long-press menu instead. */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* The puddle's look: its wobbly edge, muddy bank, pebbles and leaf. The
+   game itself happens in the round .water on top. */
+.puddle-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 12px 18px rgba(19, 78, 74, 0.18));
+  pointer-events: none;
+}
+
+.ripple {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ripple 4s ease-out infinite;
+}
+
+.ripple.late {
+  animation-delay: 2s;
+}
+
+@keyframes ripple {
+  from {
+    transform: scale(0.3);
+    opacity: 0.7;
+  }
+
+  to {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+.water {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  /* Touch and hold on the water to steer (game/touch.js): don't scroll or zoom
+     the page, select text, or pop up the long-press menu instead. */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.pal-mover {
+  grid-area: 1 / 1; /* stack in the puddle center, even after dividing into two */
+  width: 13%;
+  position: relative;
+  z-index: 1; /* move over the bacteria */
+  will-change: transform;
+}
+
+
+.puddle-pal {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.puddle-pal[hidden] {
+  display: none;
+}
+
+
+/* The pal's name and species above the puddle. */
+.puddle-title {
+  margin-bottom: 1.25rem;
+}
+
+.puddle-title .pal-name {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.puddle-title .species {
+  margin: 0.15rem 0 0;
+  font-size: 1.05rem;
+}
+
+.win-banner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  width: min(320px, 85%);
+  padding: 1.25rem 1.5rem 1.5rem;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.92);
+  border: 2px solid rgba(15, 118, 110, 0.25);
+  border-radius: 20px;
+  box-shadow: 0 16px 36px rgba(19, 78, 74, 0.2);
+  animation: pop-in 0.35s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .win-banner {
+    animation: none;
+  }
+}
+
+.win-banner[hidden] {
+  display: none;
+}
+
+.win-banner h2 {
+  margin: 0 0 0.5rem;
+}
+
+.win-banner p {
+  margin: 0;
+}
+
+/* The "Did you know?" fact about your pal when you win. */
+.win-banner .fun-fact {
+  margin-top: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 12px;
+  background: rgba(15, 118, 110, 0.08);
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.win-banner .fun-fact[hidden] {
+  display: none;
+}
+
+.win-banner .fun-fact strong {
+  color: #0f766e;
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.85);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.banner-buttons {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.banner-buttons .pick-btn {
+  margin-top: 0;
+  font: inherit;
+  font-weight: 700;
+}
+
+.banner-buttons .pick-btn[hidden] {
+  display: none;
+}
+
+/* The other choices in the pop-up: outlined instead of filled. */
+.start-over,
+.back-to-picker {
+  background: white;
+  color: #0f766e;
+  box-shadow: inset 0 0 0 2px #0f766e;
+}
+
+.start-over:hover,
+.back-to-picker:hover {
+  background: #dbeafe;
+}
+
+/* The group the player steers stays on top, in full color with a soft halo;
+   the offspring left behind are paler and a little washed out. */
+.pal-mover.player {
+  z-index: 2;
+  filter:
+    drop-shadow(0 0 2px #fff)
+    drop-shadow(0 0 3px #fff)
+    drop-shadow(0 0 7px rgba(15, 118, 110, 0.45));
+}
+
+.pal-mover.offspring {
+  opacity: 0.75;
+  filter: saturate(0.45) brightness(1.08);
+}
+
+/* Only the player's pal has a face. */
+.pal-mover.offspring .face {
+  display: none;
+}
+
+/* Offspring sit still, without the idle wiggle. That also keeps a puddle
+   full of 64 cells smooth. */
+.pal-mover.offspring .puddle-pal {
+  animation: none;
+}
+
+.cell-count {
+  margin: 1rem 0 0;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.how-to-play {
+  margin: 0.75rem 0 0;
+  line-height: 1.6;
+  color: #334155;
+}
+
+/* Arrow-key directions on a computer, touch directions on a phone or tablet.
+   The media query picks from the device before any script runs (a finger is a
+   "coarse" pointer); then game/touch.js switches them to match whatever the
+   player actually uses, for devices with both. */
+.for-touch {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .for-keys {
+    display: none;
+  }
+
+  .for-touch {
+    display: inline;
+  }
+}
+
+html.input-touch .for-keys,
+html.input-keys .for-touch {
+  display: none;
+}
+
+html.input-touch .for-touch,
+html.input-keys .for-keys {
+  display: inline;
+}
+
+/* The player's pal after the Cyclops catches her. */
+.pal-mover.killed {
+  filter: grayscale(1);
+  opacity: 0.45;
+  transition: filter 0.4s ease, opacity 0.4s ease;
+}
+
+/* Freeze her mid-wiggle rather than turning the animation off: switching it
+   off snaps her back to her resting pose (up to 10px away for a bob), so she
+   would look like it never touched her. */
+.pal-mover.killed .puddle-pal {
+  animation-play-state: paused;
+}
+
+/* On a phone, give the puddle as much of the screen as we can: less padding
+   around the card. */
+@media (max-width: 600px) {
+  .picker-page:has(.puddle-shell) {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .puddle-shell {
+    padding: 1rem 0.5rem;
+  }
+}
+
+/* Short landscape screens: move the puddle left at full screen height,
+   with the name, cell count and instructions beside it, since dragging
+   steers instead of scrolling. Reduce padding on other pages' cards. */
+@media (orientation: landscape) and (max-height: 540px) {
+  .picker-page {
+    padding: 0.75rem 1rem;
+  }
+
+  .picker-shell {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .picker-page:has(.puddle-shell) {
+    padding: 0.5rem 1rem;
+  }
+
+  .puddle-shell {
+    width: min(1000px, 100%);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    /* The words beside the puddle stay together in the middle of its height. */
+    grid-template-rows: 1fr auto auto auto auto 1fr;
+    grid-template-areas:
+      'puddle .'
+      'puddle title'
+      'puddle count'
+      'puddle how'
+      'puddle back'
+      'puddle .';
+    align-content: center;
+    column-gap: 1.5rem;
+    padding: 0.5rem 1rem 0.5rem 0.5rem;
+  }
+
+  .puddle-shell .puddle {
+    grid-area: puddle;
+    align-self: center;
+    /* The screen's height, less the padding around the puddle.
+       svh is the height with Safari's toolbars showing, so they never hide
+       the bottom of the puddle; vh is for browsers too old to know svh. */
+    width: min(600px, calc(100vh - 2rem));
+    width: min(600px, calc(100svh - 2rem));
+  }
+
+  .puddle-shell .puddle-title {
+    grid-area: title;
+    margin-bottom: 0;
+  }
+
+  .puddle-shell .puddle-title .pal-name {
+    font-size: 1.6rem;
+  }
+
+  .puddle-shell .cell-count {
+    grid-area: count;
+    margin-top: 0.5rem;
+  }
+
+  .puddle-shell .how-to-play {
+    grid-area: how;
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .puddle-shell .back-link {
+    grid-area: back;
+    justify-self: center;
+    margin-top: 0.75rem;
+  }
+
+  /* The pop-up when you win or lose can be taller than a puddle this small:
+     keep it inside the puddle, and let it scroll if it has to. */
+  .puddle-shell .win-banner {
+    max-height: 92%;
+    overflow-y: auto;
+    padding: 0.75rem 1rem 1rem;
+  }
+
+  .puddle-shell .win-banner .fun-fact {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* An offspring cell eaten by the Cyclops (game/colony.js): a ring
+   in the pal's color that bursts outward and fades. */
+.pop {
+  position: absolute;
+  aspect-ratio: 1;
+  border: 3px solid;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: pop 0.35s ease-out forwards;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(0.7);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.8);
+    border-width: 1px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pop {
+    animation-duration: 0.01s;
+  }
+}
+
+/* The bacteria Amy eats (game/bacteria.js): tiny rods and round cells in a
+   few bright colors, each turned its own way (--turn), jiggling in the
+   water. */
+.bacterium {
+  position: absolute;
+  width: 2%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--color, #f97316);
+  box-shadow: 0 0 0 1px rgba(19, 78, 74, 0.35);
+  transform: translate(-50%, -50%) rotate(var(--turn, 0deg));
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  animation: jiggle 1.6s ease-in-out infinite alternate;
+}
+
+.bacterium.rod {
+  width: 3.2%;
+  aspect-ratio: 2.4;
+  border-radius: 999px;
+}
+
+.bacterium.eaten {
+  animation: none;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+}
+
+@keyframes jiggle {
+  from {
+    translate: -1px 0;
+  }
+
+  to {
+    translate: 1px 1px;
+  }
+}
+
+/* The Cyclops (game/cyclops.js): placed and turned by the game, over the
+   bacteria and the amoebas it's chasing. Its feelers twitch. */
+.cyclops {
+  position: absolute;
+  z-index: 2;
+  width: 22%;
+  transform: translate(-50%, -50%) rotate(var(--turn, 0deg));
+  pointer-events: none;
+  filter: drop-shadow(0 3px 4px rgba(67, 20, 7, 0.3));
+}
+
+/* Digesting: it sits still, its feelers stop, and it looks a little dozy. */
+.cyclops.full .antennae {
+  animation: none;
+}
+
+.cyclops.full {
+  opacity: 0.8;
+}
+
+.cyclops svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.cyclops .antennae {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: twitch 0.9s ease-in-out infinite;
+}
+
+@keyframes twitch {
+  0%,
+  100% {
+    transform: scaleX(1);
+  }
+
+  30% {
+    transform: scaleX(0.92);
+  }
+}
+
+/* For anyone who'd rather not have motion: no ripples, jiggling or
+   twitching. */
+@media (prefers-reduced-motion: reduce) {
+  .ripple,
+  .bacterium,
+  .cyclops .antennae {
+    animation: none;
+  }
+
+  .ripple {
+    opacity: 0;
+  }
+}

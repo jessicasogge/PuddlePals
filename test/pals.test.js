@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { SPECIES } from '../public/game/config.js';
 import { plainText } from '../public/game/italics.js';
-import { HOME_PALS, homePal, inRandomOrder, PAGE_SIZE, palById, PALS, palTile, pickerPages } from '../public/game/pals.js';
+import { HOME_PALS, homePal, inRandomOrder, PAGE_SIZE, palById, PALS, palTile, pickerPages, puddlePal } from '../public/game/pals.js';
 
 // (jsdom changes import.meta.url to a web address, so find files from the project folder.)
 const file = (name) => readFileSync(resolve(process.cwd(), 'public', name), 'utf8');
@@ -64,7 +64,7 @@ describe('the pals', () => {
   });
 
   it.each(PALS)('$id is framed for every page, with a face', (pal) => {
-    expect(Object.keys(pal.frames).sort()).toEqual(['home', 'picker']);
+    expect(Object.keys(pal.frames).sort()).toEqual(['home', 'picker', 'puddle']);
     expect(homePal(pal).querySelector('g.face')).not.toBeNull();
   });
 });
@@ -80,6 +80,16 @@ describe('her drawings', () => {
     const tile = palTile(PALS[0]);
     expect(tile.querySelector('svg').getAttribute('aria-hidden')).toBe('true');
     expect(tile.style.getPropertyValue('--tile')).toBe(SPECIES[PALS[0].id].tile);
+  });
+
+  it('waits hidden in the puddle until the game picks her, named for screen readers', () => {
+    const svg = puddlePal(PALS[0]);
+    expect(svg.hasAttribute('hidden')).toBe(true);
+    expect(svg.getAttribute('class')).toBe(`puddle-pal ${PALS[0].motion}`);
+    expect(svg.dataset.pal).toBe(PALS[0].id);
+    expect(svg.dataset.name).toBe(PALS[0].name);
+    expect(svg.getAttribute('aria-label')).toBe(`${PALS[0].name}, ${PALS[0].looks}`);
+    expect(svg.getAttribute('viewBox')).toBe(PALS[0].frames.puddle);
   });
 
   it('can be drawn a different width on the home page', () => {
@@ -136,12 +146,11 @@ describe('the pal picker', () => {
     expect(document.querySelector('.loading-overlay').hidden).toBe(true);
   });
 
-  it("doesn't open anything yet: the cards aren't links", async () => {
+  it('opens the puddle with her when you pick her card', async () => {
     await open('pal-picker.html', 'game/pal-picker.js');
     for (const card of document.querySelectorAll('.pal-card')) {
-      expect(card.tagName).toBe('DIV');
-      expect(card.closest('a')).toBeNull();
-      expect(card.querySelector('a, button')).toBeNull();
+      expect(card.tagName).toBe('A');
+      expect(card.getAttribute('href')).toBe(`./puddle.html?pal=${card.dataset.pal}`);
     }
   });
 

@@ -1,4 +1,4 @@
-# PuddlePals 💧
+# PuddlePals
 
 A cute microbiology game for the browser, about **protists**: the tiny living things in ponds and puddles. The sister game to [PetriPals](https://github.com/jessicasogge/petripals), built on the same engine.
 

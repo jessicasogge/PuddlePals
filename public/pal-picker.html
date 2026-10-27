@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PuddlePals | Pal Picker</title>
+    <meta name="description" content="Pick your PuddlePal: real protists, like Amoeba proteus, drawn as cute cartoons." />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <meta name="apple-mobile-web-app-title" content="PuddlePals" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="picker-page">
+    <!-- "Filling the puddle…" covers the page until game/pal-picker.js has
+         filled it in (see game/loading.js). -->
+    <div class="loading-overlay arriving">
+      <div class="loading-card" role="status">
+        <span class="loading-cells" aria-hidden="true"><span></span><span></span></span>
+        <span class="loading-text">Filling the puddle…</span>
+      </div>
+    </div>
+    <main class="picker-shell picker-wide">
+      <h1>Pick a Pal</h1>
+
+      <!-- A page of cards for each page of pals, made by game/pal-picker.js
+           from game/pals.js. One page shows at a time. -->
+      <div class="picker-pages"></div>
+
+      <!-- Paging between the pages of pals (hidden by game/pal-picker.js when
+           there's nowhere to go that way). -->
+      <nav class="picker-pager" aria-label="More pals">
+        <button class="pager-btn pager-back" type="button">← Back</button>
+        <button class="pager-btn pager-more" type="button">More pals →</button>
+      </nav>
+
+      <a class="back-link" href="./index.html">Back to home</a>
+    </main>
+    <footer class="signature">jsogge 2026</footer>
+    <script type="module" src="./game/pal-picker.js"></script>
+  </body>
+</html>

@@ -1,0 +1,858 @@
+/* The home page's title, tagline and Start button fonts: Fredoka and Nunito,
+   both under the SIL Open Font License (public/fonts/*-OFL.txt). They're kept
+   here rather than loaded from Google Fonts, so the page doesn't wait on, or
+   tell, another site. Until they load, the page uses its usual font. */
+@font-face {
+  font-family: Fredoka;
+  font-weight: 600;
+  font-display: swap;
+  src: url(./fonts/fredoka-600.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: Fredoka;
+  font-weight: 700;
+  font-display: swap;
+  src: url(./fonts/fredoka-700.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: Nunito;
+  font-weight: 700;
+  font-display: swap;
+  src: url(./fonts/nunito-700.woff2) format('woff2');
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #dbeafe;
+  color: #134e4a;
+  font-family: system-ui, sans-serif;
+  text-align: center;
+  padding-top: 3rem;
+}
+
+.friends {
+  display: flex;
+  flex-wrap: wrap; /* on narrow screens, pals wrap onto a second row */
+  justify-content: center;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 0 1rem;
+}
+
+.pal {
+  width: 120px;
+}
+
+/* On a phone, just the first six pals, so the title and Start button aren't
+   pushed down past the first screen, a little smaller so they sit in two
+   even rows of three. */
+@media (max-width: 600px) {
+  .friends > .pal {
+    max-width: calc((100vw - 3.5rem) / 3);
+  }
+
+  .friends > .pal:nth-child(n + 7) {
+    display: none;
+  }
+}
+
+/* Tap a pal on the home page and she divides in two (game/split.js). The
+   daughters can drift past the edge of her drawing while she's split. */
+.splittable .pal {
+  cursor: pointer;
+  overflow: visible;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation; /* no double-tap zoom when tapping twice */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.pal .cell {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.bob {
+  animation: bob 2.4s ease-in-out infinite;
+}
+
+.squish {
+  animation: squish 2s ease-in-out infinite 0.5s;
+  transform-origin: bottom center;
+}
+
+@keyframes wobble {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+
+  50% {
+    transform: rotate(4deg);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes squish {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+
+  50% {
+    transform: scale(1.08, 0.92);
+  }
+}
+
+/* Elia is a spirochete: she wiggles like a corkscrew. */
+@keyframes slither {
+  0%,
+  100% {
+    transform: skewX(-8deg);
+  }
+
+  50% {
+    transform: skewX(8deg);
+  }
+}
+
+.slither {
+  animation: slither 1.6s ease-in-out infinite;
+}
+
+/* The game's name on the home page, big and round like a game logo. */
+.logo {
+  margin: 1.6rem 0 0.4rem;
+  font-family: Fredoka, system-ui, sans-serif;
+  font-size: clamp(3.2rem, 15vw, 5.2rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+/* What the game is, in a few words, under its name. */
+.tagline {
+  margin: 0 0 1.4rem;
+  padding: 0 1rem;
+  font-family: Nunito, system-ui, sans-serif;
+  font-size: clamp(1.05rem, 4.6vw, 1.3rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #0f766e;
+}
+
+/* A sentence or two under the Start button saying what the game is, for
+   new players (and search engines). */
+.about {
+  max-width: 34rem;
+  margin: 2rem auto 0;
+  padding: 0 1.25rem;
+  line-height: 1.5;
+  opacity: 0.85;
+}
+
+/* The link to FunGals, the sister game, under the description. */
+.sister-game {
+  margin: 0.75rem auto 0;
+  padding: 0 1.25rem;
+  opacity: 0.85;
+}
+
+.sister-game a {
+  color: #0f766e;
+  font-weight: 700;
+}
+
+.start-btn {
+  margin-top: 1rem;
+  padding: 0.8rem 2rem;
+  font-family: Fredoka, system-ui, sans-serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: white;
+  background: #0f766e;
+  border: none;
+  border-radius: 999px;
+  box-shadow: 0 4px 0 #134e4a;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.start-btn:hover {
+  background: #14b8a6;
+}
+
+.start-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #134e4a;
+}
+
+.start-btn:disabled {
+  cursor: wait;
+  opacity: 0.8;
+}
+
+/* The home page's second button, under Start: Who’s That Pal?
+   (whos-that-pal.html). Outlined, so Start stays the main thing to press. */
+.guess-link {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.6rem 1.6rem;
+  font-family: Fredoka, system-ui, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #0f766e;
+  background: #eff6ff;
+  border: 2px solid #0f766e;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.guess-link:hover {
+  background: #dbeafe;
+}
+
+.picker-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  /* Keep the card and the signature under it together in the middle, even
+     on a page whose card is short (like choose-mode.html). */
+  align-content: center;
+  padding: 2rem 1rem;
+}
+
+.picker-shell {
+  width: min(760px, 100%);
+  background: rgba(255, 255, 255, 0.35);
+  border: 2px solid rgba(19, 78, 74, 0.15);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 20px 40px rgba(19, 78, 74, 0.08);
+}
+
+/* The pal picker is wider than the other cards, to fit four pals across. */
+.picker-wide {
+  width: min(1000px, 100%);
+  position: relative;
+}
+
+   without the browser's extra margin on top. */
+.picker-shell > h1:first-child {
+  margin-top: 0;
+}
+
+/* Four across on a computer (two rows of four), two on a tablet, one on a
+   phone, where the Select buttons wouldn't fit side by side. */
+/* Four cards across (two on a tablet, one on a phone), each the same
+   width. Flex instead of grid so a page with fewer pals than a full row
+   (like the second page, while it fills up) keeps them in the middle. */
+.picker-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.picker-grid[hidden] {
+  display: none;
+}
+
+.picker-grid > .pal-card {
+  flex: 0 0 calc((100% - 2.25rem) / 4);
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .picker-grid > .pal-card {
+    flex-basis: calc((100% - 0.75rem) / 2);
+  }
+}
+
+/* Back and More pals, under the cards. */
+.picker-pager {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.picker-pager[hidden],
+.pager-btn[hidden] {
+  display: none;
+}
+
+.pager-btn {
+  min-height: 44px;
+  padding: 0.6rem 1.3rem;
+  border: 2px solid #0f766e;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #0f766e;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pager-btn:hover {
+  background: #dbeafe;
+}
+
+.pal-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.5);
+  border: 2px solid rgba(15, 118, 110, 0.2);
+  border-radius: 18px;
+  padding: 1rem;
+}
+
+/* Cards that are links, with no button: a pal on the picker
+   (game/pal-picker.js) and a game on the mode page. The whole card is tapped,
+   so it lifts a little and outlines itself in teal on hover, to show it can
+   be. */
+a.pal-card {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+
+a.pal-card:hover {
+  border-color: #0f766e;
+  background: rgba(255, 255, 255, 0.85);
+  transform: translateY(-2px);
+}
+
+a.pal-card:active {
+  transform: translateY(0);
+}
+
+a.pal-card:focus-visible {
+  outline: 3px solid #0f766e;
+  outline-offset: 2px;
+}
+
+/* On the picker, a little more compact than elsewhere: less padding and a
+   smaller picture, so more of the page fits on the screen. */
+.picker-grid .pal-card {
+  padding: 1.1rem 0.75rem 0.85rem;
+}
+
+.picker-grid .pal-icon {
+  width: 96px;
+  height: 96px;
+  margin-bottom: 0.5rem;
+}
+
+.picker-grid .pal-icon svg {
+  width: 80px;
+  height: 80px;
+}
+
+/* Each pal's name, with her species right under it. */
+.picker-grid .pal-card h2 {
+  margin: 0.2rem 0 0.15rem;
+  line-height: 1.2;
+}
+
+/* Her species, right under her name. Every card keeps room for two lines,
+   so a long one that wraps (Streptococcus pneumoniae) doesn't make her card
+   look different from the rest. */
+.picker-grid .species {
+  margin: 0;
+  line-height: 1.3;
+  min-height: 2.6em;
+}
+
+/* On a phone, two pals to a row instead of one, a little smaller, with
+   less padding around the grid, so most of a page fits on the screen. */
+@media (max-width: 520px) {
+  .picker-shell:has(.picker-grid) {
+    padding: 1.25rem 0.75rem;
+  }
+
+  .picker-grid {
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+
+  .picker-grid > .pal-card {
+    flex-basis: calc((100% - 0.6rem) / 2);
+  }
+
+  .picker-grid .pal-card {
+    padding: 0.7rem 0.4rem 0.5rem;
+  }
+
+  .picker-grid .pal-icon {
+    width: 72px;
+    height: 72px;
+    margin-bottom: 0.35rem;
+  }
+
+  .picker-grid .pal-icon svg {
+    width: 60px;
+    height: 60px;
+  }
+
+  .picker-grid .pal-card h2 {
+    font-size: 1.2rem;
+  }
+
+  .picker-grid .species {
+    font-size: 0.8rem;
+  }
+}
+
+.pal-icon {
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 0.75rem;
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  /* Each pal's own tile color (her `tile` in config.js), set by palTile. */
+  background: var(--tile, rgba(255, 255, 255, 0.6));
+  box-shadow: inset 0 0 0 2px rgba(19, 78, 74, 0.06);
+}
+
+.pal-icon svg {
+  width: 90px;
+  height: 90px;
+  display: block;
+}
+
+/* On a tile she's small, so only the sparks at the tips of her nanowires
+   show: the bursts along them would crowd the wires. */
+.pal-icon .burst {
+  display: none;
+}
+
+.pick-btn {
+  margin-top: 0.75rem;
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 999px;
+  background: #0f766e;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.pick-btn:hover {
+  background: #14b8a6;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 1.5rem;
+  color: #0f766e;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* Picking rivals before a mixed culture race (game/choose-rivals.js): a
+   tile for every other pal, tapped on and off, up to three. */
+.rivals-status {
+  margin: 0.5rem 0 0;
+  font-weight: 700;
+  color: #0f766e;
+  min-height: 1.5em;
+}
+
+/* Six across (three on a phone), each the same width, with a short last row
+   kept in the middle. */
+.rivals-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.rivals-grid > .rival-btn {
+  flex: 0 0 calc((100% - 3.75rem) / 6);
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  .rivals-grid {
+    gap: 0.6rem;
+  }
+
+  .rivals-grid > .rival-btn {
+    flex-basis: calc((100% - 1.2rem) / 3);
+  }
+
+  .rival-btn .pal-icon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .rival-btn .pal-icon svg {
+    width: 52px;
+    height: 52px;
+  }
+}
+
+.rival-btn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.6rem 0.4rem 0.7rem;
+  background: rgba(255, 255, 255, 0.5);
+  border: 2px solid rgba(15, 118, 110, 0.2);
+  border-radius: 18px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rival-btn .pal-icon {
+  width: 76px;
+  height: 76px;
+  margin: 0;
+  border-radius: 16px;
+}
+
+.rival-btn .pal-icon svg {
+  width: 62px;
+  height: 62px;
+}
+
+.rival-btn:hover:not(:disabled):not([aria-pressed='true']) {
+  border-color: #14b8a6;
+}
+
+.rival-btn:focus-visible {
+  outline: 3px solid #0f766e;
+  outline-offset: 2px;
+}
+
+/* Picked: a thick teal border and a check in the corner. */
+.rival-btn[aria-pressed='true'] {
+  background: #eff6ff;
+  border: 3px solid #0f766e;
+  padding: calc(0.6rem - 1px) calc(0.4rem - 1px) calc(0.7rem - 1px);
+}
+
+.rival-btn[aria-pressed='true']::after {
+  content: '\2713';
+  position: absolute;
+  top: -0.55rem;
+  right: -0.55rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: #0f766e;
+  color: white;
+  font-size: 0.9rem;
+  line-height: 1.6rem;
+}
+
+.rival-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.rivals-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.rivals-actions .pick-btn {
+  margin-top: 0;
+  min-height: 44px;
+  padding: 0.6rem 1.4rem;
+  font: inherit;
+  font-weight: 700;
+}
+
+.rivals-actions .pick-btn:disabled {
+  background: #94a3b8;
+  cursor: default;
+}
+
+.rivals-actions .pager-btn {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+/* Who’s That Pal? (game/whos-that-pal.js): a fact with "this pal" in place of
+   her name, over a tile for every pal (the rival screen's tiles). */
+.guess-shell {
+  width: min(860px, 100%);
+}
+
+.guess-counter {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f766e;
+  opacity: 0.75;
+}
+
+.guess-fact {
+  max-width: 38rem;
+  margin: 0.75rem auto 0;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.7);
+  border: 2px solid rgba(15, 118, 110, 0.2);
+  border-radius: 18px;
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+
+/* Where her name goes: "this pal" in plain text, then her name, in her
+   color, once she's found. */
+.fact-blank.filled {
+  font-weight: 700;
+}
+
+.guess-status {
+  margin: 1rem 0 0;
+  min-height: 1.5em;
+  font-weight: 700;
+  color: #0f766e;
+}
+
+/* Her species under her name on each tile, shortened: P. aeruginosa. It
+   shrinks a little with the tile on a phone, and a long one
+   (L. monocytogenes) wraps onto two lines if it still won't fit. */
+.guess-btn {
+  container-type: inline-size;
+}
+
+.guess-species {
+  margin-top: -0.25rem;
+  font-size: clamp(0.68rem, 11.5cqi, 0.8rem);
+  font-weight: 400;
+  color: #134e4a;
+  line-height: 1.2;
+}
+
+/* The right pal: a thick teal border and a check, like a picked rival. */
+.guess-btn.right {
+  background: #eff6ff;
+  border: 3px solid #0f766e;
+  padding: calc(0.6rem - 1px) calc(0.4rem - 1px) calc(0.7rem - 1px);
+}
+
+.guess-btn.right::after {
+  content: '\2713';
+  position: absolute;
+  top: -0.55rem;
+  right: -0.55rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: #0f766e;
+  color: white;
+  font-size: 0.9rem;
+  line-height: 1.6rem;
+}
+
+/* Keep room for Next fact, so the page doesn't jump when it shows up. */
+.guess-shell .rivals-actions {
+  min-height: 44px;
+}
+
+.next-fact[hidden] {
+  display: none;
+}
+
+.wobble {
+  animation: wobble 3s ease-in-out infinite;
+}
+
+/* For anyone who'd rather not have motion, the pals stay still. */
+@media (prefers-reduced-motion: reduce) {
+  .bob,
+  .squish,
+  .slither,
+  .wobble {
+    animation: none;
+  }
+}
+
+.species {
+  font-size: 0.95rem;
+}
+
+/* Jess's signature at the foot of every page. */
+.signature {
+  margin: 2rem 0 1.5rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+}
+
+.picker-page .signature {
+  margin: 1rem 0 0;
+}
+
+/* On the home page, push it down to the bottom of the screen instead of
+   right under the start button. */
+body:not(.picker-page) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+body:not(.picker-page) .signature {
+  margin-top: auto;
+  padding-top: 2rem;
+}
+
+/* "Growing the colony…": the small card that shows while the next screen
+   loads (game/loading.js). It waits a moment before fading in, so a quick
+   page change never flashes it. The see-through cover behind it keeps a
+   second tap from starting a second trip. */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(204, 251, 241, 0.55);
+  animation: loading-in 0.2s ease-out 0.15s both;
+}
+
+.loading-overlay[hidden] {
+  display: none;
+}
+
+/* On a page that's still being filled in, the cover is solid, so the half
+   built page doesn't show through. If its script never gets to say it's
+   done (an error, say), give up after a while rather than block the page
+   forever. */
+.loading-overlay.arriving {
+  background: #dbeafe;
+  animation: loading-give-up 0s linear 8s forwards;
+}
+
+.loading-overlay.arriving .loading-card {
+  animation: loading-in 0.2s ease-out 0.15s both;
+}
+
+.loading-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.7rem 1.25rem;
+  background: white;
+  border: 2px solid rgba(15, 118, 110, 0.25);
+  border-radius: 999px;
+  box-shadow: 0 12px 28px rgba(19, 78, 74, 0.18);
+  color: #134e4a;
+  font-family: Fredoka, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+/* A little cell pinching into two daughter cells, over and over. */
+.loading-cells {
+  position: relative;
+  flex: none;
+  width: 30px;
+  height: 18px;
+}
+
+.loading-cells span {
+  position: absolute;
+  top: 2px;
+  left: 8px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #14b8a6;
+  animation: loading-split-left 0.9s ease-in-out infinite alternate;
+}
+
+.loading-cells span:last-child {
+  background: #0f766e;
+  animation-name: loading-split-right;
+}
+
+@keyframes loading-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes loading-give-up {
+  to {
+    visibility: hidden;
+  }
+}
+
+@keyframes loading-split-left {
+  to {
+    transform: translateX(-6px);
+  }
+}
+
+@keyframes loading-split-right {
+  to {
+    transform: translateX(6px);
+  }
+}
+
+/* No moving cells for anyone who'd rather not have motion: just the two
+   daughters, side by side. */
+@media (prefers-reduced-motion: reduce) {
+  .loading-cells span {
+    animation: none;
+    transform: translateX(-6px);
+  }
+
+  .loading-cells span:last-child {
+    transform: translateX(6px);
+  }
+}
+

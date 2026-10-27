@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PuddlePals | Who’s That Pal?</title>
+    <meta name="description" content="Read a fun fact about a real protist and guess which PuddlePal it belongs to. No score, just facts and tries." />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <meta name="apple-mobile-web-app-title" content="PuddlePals" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="picker-page">
+    <!-- "Filling the puddle…" covers the page until game/whos-that-pal.js has
+         filled it in (see game/loading.js). -->
+    <div class="loading-overlay arriving">
+      <div class="loading-card" role="status">
+        <span class="loading-cells" aria-hidden="true"><span></span><span></span></span>
+        <span class="loading-text">Filling the puddle…</span>
+      </div>
+    </div>
+    <main class="picker-shell guess-shell">
+      <h1>Who’s That Pal?</h1>
+      <!-- How many facts you've seen so far, out of all of them. Not a score. -->
+      <p class="guess-counter" aria-label="Fact number"></p>
+      <!-- A fact with "this pal" in place of her name, from game/guess.js. -->
+      <p class="guess-fact"></p>
+      <p class="guess-status" aria-live="polite">Who is this fact about? Tap her!</p>
+      <!-- A button for every pal, made by game/whos-that-pal.js. -->
+      <div class="rivals-grid guess-grid"></div>
+      <div class="rivals-actions">
+        <button class="pick-btn next-fact" type="button" hidden>Next fact</button>
+      </div>
+      <a class="back-link" href="./index.html">Back to home</a>
+    </main>
+    <footer class="signature">jsogge 2026</footer>
+    <script type="module" src="./game/whos-that-pal.js"></script>
+  </body>
+</html>

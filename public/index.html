@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PuddlePals: A Protist Game</title>
+    <meta name="description" content="A free microbiology game you play in your browser: meet real protists from the puddle, drawn as cute cartoons." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PuddlePals" />
+    <meta property="og:title" content="PuddlePals: A Protist Game" />
+    <meta property="og:description" content="A free microbiology game you play in your browser: meet real protists from the puddle, drawn as cute cartoons." />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <meta name="apple-mobile-web-app-title" content="PuddlePals" />
+    <link rel="preload" href="./fonts/fredoka-700.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <!-- The pals, drawn by script.js from game/pals.js -->
+    <div class="friends"></div>
+
+    <h1 class="logo">PuddlePals</h1>
+    <p class="tagline">Tiny protists. Big puddle.</p>
+    <button class="start-btn" type="button">Press Start to Play</button>
+    <a class="guess-link" href="./whos-that-pal.html">Who’s That Pal?</a>
+    <p class="about">
+      Meet a real protist from a pond or puddle, drawn as a cartoon. Tap her
+      and watch her divide in two.
+    </p>
+    <p class="sister-game">
+      The sister game to
+      <a href="https://jessicasogge.github.io/petripals/">PetriPals</a>.
+    </p>
+    <footer class="signature">jsogge 2026</footer>
+    <script type="module" src="./script.js"></script>
+  </body>
+</html>

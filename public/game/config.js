@@ -1,14 +1,9 @@
-// Each pal's species details, keyed by her id in pals.js.
+// Each pal's species details
 //
-// `scientific` is her species name, shown under her name on the picker and
-// in Who’s That Pal?. It's all in italics, unless it marks the italic part
-// between asterisks (like *Salmonella* Typhi in PetriPals).
-//
-// `color` is for her name when it's filled in on Who’s That Pal?.
-//
-// `tile` is the background of her tile on the picker and the quiz.
-//
-// `kind` is what sort of protist she is.
+// `scientific` is her species name
+// `color` is for her name when it's filled in on Who’s That Pal?
+// `tile` is the background of her tile on the picker and the quiz
+// `kind` is what sort of protist she is
 export const SPECIES = {
   amy: {
     scientific: 'Amoeba proteus',

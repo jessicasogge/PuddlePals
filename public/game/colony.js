@@ -4,12 +4,13 @@ import { GAME } from './config.js';
 import { keepInPuddle, pushApart, pushInsideRim } from './physics.js';
 
 // `leader` is the steered group, `food` the bacteria (bacteria.js), `target`
-// the size the colony stops dividing at. `onDivide` is called after every
-// division and `onPop` after a predator gobbles up offspring. `color` tints
-// the pop.
+// the size the colony stops dividing at (none unless given). `onDivide` is
+// called after every division and `onPop` after a predator gobbles up
+// offspring. `onLeaderEat` is told how many bacteria the leader herself just
+// ate (only those count toward finishing a level). `color` tints the pop.
 export function makeColony({
-  leader, food, puddleRadius, target, color = '#94a3b8',
-  onDivide = () => {}, onPop = () => {},
+  leader, food, puddleRadius, target = Infinity, color = '#94a3b8',
+  onDivide = () => {}, onPop = () => {}, onLeaderEat = () => {},
 }) {
   const groups = [leader];
   let pending = 0; // bacteria the leader has eaten toward her next division
@@ -44,7 +45,9 @@ export function makeColony({
     // they've eaten enough; the leader's division waits for divideLeader().
     eat(seconds, radius) {
       for (const [x, y, reach] of leader.body()) {
-        pending += food.eatNear(x / radius, y / radius, reach / radius);
+        const ate = food.eatNear(x / radius, y / radius, reach / radius);
+        pending += ate;
+        if (ate > 0) onLeaderEat(ate);
       }
       for (const group of [...groups]) {
         if (group === leader) continue;

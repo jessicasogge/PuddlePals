@@ -907,7 +907,7 @@ body:not(.picker-page) .signature {
   -webkit-touch-callout: none;
 }
 
-/* The puddle's look: a flat blue splash with a lighter rim and a shine. The game itself happens in the round .water on top.
+/* The puddle's look: a flat blue splash with a lighter rim. The game itself happens in the round .water on top.
    Its lobes poke a little past the square .puddle (overflow: visible). */
 .puddle-art {
   position: absolute;

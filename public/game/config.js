@@ -27,13 +27,15 @@ export const SPECIES = {
   },
 };
 
-// Each level needs a bigger colony, and has one Cyclops per level number.
+// Each level: how many bacteria Amy has to eat herself to finish it (like
+// PetriPals' Phage Attack, 5 more each level), and one Cyclops per level
+// number.
 export const LEVELS = [
-  { target: 4, cyclops: 1 },
-  { target: 8, cyclops: 2 },
-  { target: 12, cyclops: 3 },
-  { target: 16, cyclops: 4 },
-  { target: 24, cyclops: 5 },
+  { target: 20, cyclops: 1 },
+  { target: 25, cyclops: 2 },
+  { target: 30, cyclops: 3 },
+  { target: 35, cyclops: 4 },
+  { target: 40, cyclops: 5 },
 ];
 
 // The Cyclops (game/cyclops.js): a copepod, a tiny one-eyed crustacean that
@@ -58,7 +60,7 @@ export const CYCLOPS = {
 };
 
 export const GAME = {
-  BACTERIA: 12, // bacteria in the puddle at a time
+  BACTERIA: 20, // bacteria in the puddle at a time
   FOOD_PER_DIVISION: 1, // bacteria an amoeba eats before dividing
   SPEED: 0.7, // Amy's speed, as a fraction of the puddle radius per second
   // Steering with a mouse, how close to the pointer counts as there (so she

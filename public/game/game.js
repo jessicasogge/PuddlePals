@@ -15,7 +15,8 @@ export const touching = (a, b) => a.some(([ax, ay, ar]) => b.some(([bx, by, br])
 
 // `you` is { svg, species }: your pal's drawing on the page and her settings
 // from config.js. `level` is which level this is (1 to LEVELS.length), and
-// `target` how many cells it takes to beat it. `random` returns 0 to 1, for
+// `target` how many bacteria she has to eat herself to beat it (her
+// offspring eat and divide too, but don't count). `random` returns 0 to 1, for
 // the tests. Returns the Cyclopes, for the tests.
 export function playPuddle({
   you, food, level = 1, target = LEVELS[level - 1].target, random = Math.random,
@@ -30,9 +31,15 @@ export function playPuddle({
   const playerMover = document.querySelector('.pal-mover');
   playerMover.classList.add('player');
   const leader = cellGroup({ mover: playerMover, svg: you.svg, species: you.species, isPlayer: true });
+  // Only what your pal eats herself counts toward winning. There's no cap
+  // on the colony's size, since it's the bacteria that count.
+  let eaten = 0;
   const colony = makeColony({
-    leader, food, puddleRadius, target, color: you.species.color,
-    onDivide: () => updateCounter(), onPop: () => updateCounter(),
+    leader, food, puddleRadius, color: you.species.color,
+    onLeaderEat: (ate) => {
+      eaten += ate;
+      updateCounter();
+    },
   });
   const hunters = cyclopsAround(water, LEVELS[level - 1].cyclops, random);
 
@@ -59,8 +66,7 @@ export function playPuddle({
   document.querySelector('.back-to-picker').addEventListener('click', () => goTo('./pal-picker.html'));
 
   function updateCounter() {
-    const shown = Math.min(colony.cellCount(), target);
-    counter.textContent = `Level ${level} · ${shown} / ${target} amoebas`;
+    counter.textContent = `Level ${level} · ${Math.min(eaten, target)} / ${target} bacteria`;
   }
 
   function step(time) {
@@ -83,7 +89,7 @@ export function playPuddle({
 
     if (!finished) {
       colony.eat(seconds, radius);
-      if (colony.cellCount() >= target) win();
+      if (eaten >= target) win();
       else colony.divideLeader();
     }
 
@@ -102,9 +108,9 @@ export function playPuddle({
       cyclops.step(seconds, preyFor(cyclops.fx, cyclops.fy, offspring, amy));
       // A full one is busy digesting, and doesn't eat again until it's done.
       if (cyclops.full <= 0) {
-        const eaten = colony.popTouching([px(cyclops.head())]);
-        if (eaten > 0) cyclops.eat();
-        lost += eaten;
+        const gobbled = colony.popTouching([px(cyclops.head())]);
+        if (gobbled > 0) cyclops.eat();
+        lost += gobbled;
       }
       if (touching(leader.body(), cyclops.body().map(px))) {
         lose();
@@ -127,10 +133,10 @@ export function playPuddle({
       showFact(pal);
       if (level < LEVELS.length) {
         nextLevel = level + 1;
-        showBanner(`Level ${level} complete!`, `You grew a colony of ${target} amoebas!`, `Play level ${nextLevel}`);
+        showBanner(`Level ${level} complete!`, `${name} ate ${target} bacteria!`, `Play level ${nextLevel}`);
       } else {
         nextLevel = 1;
-        showBanner('You won!', `You beat all ${LEVELS.length} levels with a colony of ${target} amoebas!`, 'Play again');
+        showBanner('You won!', `You beat all ${LEVELS.length} levels! ${name} ate ${target} bacteria with the Cyclopes all around.`, 'Play again');
       }
     }, Math.max(0, GAME.DIVIDE_MS - colony.sinceAnyDivision));
   }
@@ -140,9 +146,9 @@ export function playPuddle({
     playerMover.classList.add('killed');
     setTimeout(() => {
       showFact(pal);
-      const eaten = lost === 0 ? '' : ` It ate ${lost} of her offspring first.`;
+      const offspring = lost === 0 ? '' : ` It ate ${lost} of her offspring first.`;
       showBanner('Game over',
-        `A Cyclops caught ${name}! These tiny one-eyed crustaceans hunt protists in ponds and puddles.${eaten}`,
+        `A Cyclops caught ${name}! These tiny one-eyed crustaceans hunt protists in ponds and puddles.${offspring}`,
         `Try level ${level} again`, { startOver: level > 1 }); // on level 1 "Start over" would just try again
     }, 500);
   }
@@ -158,7 +164,7 @@ export function playPuddle({
   }
 
   // Keep the how-to-play target in step with the real one.
-  for (const el of document.querySelectorAll('.target-cells')) el.textContent = target;
+  for (const el of document.querySelectorAll('.target-food')) el.textContent = target;
   updateCounter();
   requestAnimationFrame(step);
   return { hunters, colony };

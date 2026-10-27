@@ -75,6 +75,34 @@ describe('Amy dividing', () => {
   });
 });
 
+describe('telling the game what Amy ate', () => {
+  it("passes on just the bacteria she eats herself, not her offspring's", () => {
+    const onLeaderEat = vi.fn();
+    const c = colony({ meals: () => 1, onLeaderEat });
+    c.eat(0.016, RADIUS);
+    const herBody = SPECIES.amy.body.length;
+    expect(onLeaderEat).toHaveBeenCalledTimes(herBody);
+    c.divideLeader();
+    c.leader.body = () => [];
+    c.eat(0.016, RADIUS); // only her offspring eats now
+    expect(onLeaderEat).toHaveBeenCalledTimes(herBody);
+  });
+
+  it("doesn't need to be told", () => {
+    const c = colony({ meals: () => 1 });
+    expect(() => c.eat(0.016, RADIUS)).not.toThrow();
+  });
+
+  it('has no cap on the colony unless given one', () => {
+    const c = makeColony({ leader: leader(), food: food(() => 1), puddleRadius: () => RADIUS });
+    c.eat(0.016, RADIUS);
+    c.divideLeader();
+    c.leader.body = () => [];
+    for (let i = 0; i < 5; i++) c.eat(1, RADIUS);
+    expect(c.cellCount()).toBeGreaterThan(5);
+  });
+});
+
 describe('offspring', () => {
   it('divide on their own when they eat, and wait between divisions too', () => {
     const c = colony({ meals: () => 1 });

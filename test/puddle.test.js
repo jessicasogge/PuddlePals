@@ -67,7 +67,8 @@ describe('the puddle page', () => {
     // drawing lines up with it.
     const css = readFileSync(resolve(process.cwd(), 'public/styles.css'), 'utf8');
     expect(css.match(/\n\.puddle \{([^}]*)\}/)[1]).toContain('display: flow-root;');
-    // No pulsing ripples.
+    // No pulsing ripples, and no shine marks along its edges.
     expect(page).not.toContain('ripple');
+    expect(page).not.toContain('stroke="white"');
   });
 });

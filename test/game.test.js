@@ -120,16 +120,24 @@ describe('touching', () => {
 });
 
 describe('a level', () => {
-  it('counts the amoebas toward the target, and keeps the how-to-play in step', () => {
+  it('counts the bacteria Amy eats herself toward the target, and keeps the how-to-play in step', () => {
     start({ level: 2 });
-    expect(document.querySelector('.cell-count').textContent).toBe(`Level 2 · 1 / ${LEVELS[1].target} amoebas`);
-    expect(document.querySelector('.target-cells').textContent).toBe(String(LEVELS[1].target));
-    fake.colony.setCells(3);
-    fake.options.onDivide();
-    expect(document.querySelector('.cell-count').textContent).toBe(`Level 2 · 3 / ${LEVELS[1].target} amoebas`);
-    fake.colony.setCells(2);
-    fake.options.onPop(1);
-    expect(document.querySelector('.cell-count').textContent).toBe(`Level 2 · 2 / ${LEVELS[1].target} amoebas`);
+    const target = LEVELS[1].target;
+    expect(document.querySelector('.cell-count').textContent).toBe(`Level 2 · 0 / ${target} bacteria`);
+    expect(document.querySelector('.target-food').textContent).toBe(String(target));
+    fake.options.onLeaderEat(1);
+    fake.options.onLeaderEat(2);
+    expect(document.querySelector('.cell-count').textContent).toBe(`Level 2 · 3 / ${target} bacteria`);
+  });
+
+  it("doesn't cap the colony, or count what her offspring eat", () => {
+    start();
+    expect(fake.options.target).toBeUndefined();
+    expect(Object.keys(fake.options)).not.toContain('onDivide');
+  });
+
+  it('goes up 5 bacteria a level, like Phage Attack', () => {
+    expect(LEVELS.map((level) => level.target)).toEqual([20, 25, 30, 35, 40]);
   });
 
   it('has one Cyclops per level number', () => {
@@ -162,14 +170,14 @@ describe('winning', () => {
   it('shows level complete once the newest cell has settled, with a fact, and goes on to the next level', () => {
     const banner = start({ level: 1 });
     fake.colony.sinceAnyDivision = 0;
-    fake.colony.setCells(LEVELS[0].target);
+    fake.options.onLeaderEat(LEVELS[0].target);
     frame();
     expect(food.stop).toHaveBeenCalled();
     expect(banner.hidden).toBe(true);
     vi.advanceTimersByTime(GAME.DIVIDE_MS);
     expect(banner.hidden).toBe(false);
     expect(banner.querySelector('h2').textContent).toBe('Level 1 complete!');
-    expect(banner.querySelector('.win-message').textContent).toBe(`You grew a colony of ${LEVELS[0].target} amoebas!`);
+    expect(banner.querySelector('.win-message').textContent).toBe(`Amy ate ${LEVELS[0].target} bacteria!`);
     expect(banner.querySelector('.fun-fact').hidden).toBe(false);
     expect(banner.querySelector('.start-over').hidden).toBe(true);
     banner.querySelector('.play-again').click();
@@ -179,10 +187,12 @@ describe('winning', () => {
   it('says you won after the last level, and starts again from level 1', () => {
     const last = LEVELS.length;
     const banner = start({ level: last });
-    fake.colony.setCells(LEVELS[last - 1].target);
+    fake.options.onLeaderEat(LEVELS[last - 1].target);
     frame();
     vi.advanceTimersByTime(GAME.DIVIDE_MS);
     expect(banner.querySelector('h2').textContent).toBe('You won!');
+    expect(banner.querySelector('.win-message').textContent).toBe(
+      `You beat all ${last} levels! Amy ate ${LEVELS[last - 1].target} bacteria with the Cyclopes all around.`);
     expect(banner.querySelector('.play-again').textContent).toBe('Play again');
     banner.querySelector('.play-again').click();
     expect(location.href).toBe('http://localhost/puddle.html?pal=amy&level=1');
@@ -190,7 +200,7 @@ describe('winning', () => {
 
   it('stops play, so nothing happens after winning', () => {
     start();
-    fake.colony.setCells(LEVELS[0].target);
+    fake.options.onLeaderEat(LEVELS[0].target);
     frame();
     fake.colony.eat.mockClear();
     run(CYCLOPS.START_MS + 100);

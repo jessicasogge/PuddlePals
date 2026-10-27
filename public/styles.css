@@ -43,6 +43,10 @@ body {
   align-items: flex-end;
   gap: 0.5rem;
   padding: 0 1rem;
+  /* script.js draws the pals in after the page first shows. Keep their room
+     (Amy's homeWidth in game/pals.js; she's as tall as she is wide) so the
+     title and buttons don't jump down when she arrives. */
+  min-height: 160px;
 }
 
 .pal {
@@ -53,6 +57,10 @@ body {
    pushed down past the first screen, a little smaller so they sit in two
    even rows of three. */
 @media (max-width: 600px) {
+  .friends {
+    min-height: min(160px, calc((100vw - 3.5rem) / 3));
+  }
+
   .friends > .pal {
     max-width: calc((100vw - 3.5rem) / 3);
   }

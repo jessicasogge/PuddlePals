@@ -104,6 +104,20 @@ describe('the home page', () => {
     expect(document.querySelector('.guess-link').getAttribute('href')).toBe('./whos-that-pal.html');
   });
 
+  it('links to both sister games, PetriPals and FunGals', async () => {
+    await open('index.html', 'script.js');
+    const links = [...document.querySelectorAll('.sister-game a')];
+    expect(links.map((a) => [a.textContent, a.getAttribute('href')])).toEqual([
+      ['PetriPals', 'https://jessicasogge.github.io/petripals/'],
+      ['FunGals', 'https://jessicasogge.github.io/fungals/'],
+    ]);
+  });
+
+  it("keeps room for the pals before they're drawn, so the page doesn't jump", () => {
+    const tallest = Math.max(...HOME_PALS.map((pal) => pal.homeWidth ?? 120));
+    expect(css).toMatch(new RegExp(`\\n\\.friends \\{[^}]*min-height: ${tallest}px;`));
+  });
+
   it('has a different background from PetriPals, but the same green words', () => {
     const body = css.match(/\nbody \{[^}]*\}/)[0];
     expect(body).toContain('color: #134e4a;');

@@ -58,12 +58,15 @@ describe('the puddle page', () => {
     expect(playPuddle).not.toHaveBeenCalled();
   });
 
-  it('is a puddle: a blue splash with a rim and a droplet, and the round part the game happens in', () => {
+  it('is a puddle: a blue splash with a rim, and the round part the game happens in', () => {
     expect(page).toContain('class="puddle-art"');
     expect(page).toContain('class="rim"');
-    expect(page).toContain('class="droplet"');
     expect(page).toContain('class="pond"');
     expect(page).toContain('<div class="water">');
+    // The water's margins stay inside the puddle, so it's square and the
+    // drawing lines up with it.
+    const css = readFileSync(resolve(process.cwd(), 'public/styles.css'), 'utf8');
+    expect(css.match(/\n\.puddle \{([^}]*)\}/)[1]).toContain('display: flow-root;');
     // No pulsing ripples.
     expect(page).not.toContain('ripple');
   });

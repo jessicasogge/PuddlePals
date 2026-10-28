@@ -1,4 +1,5 @@
-// Shared pal drawings for the home page, the picker and Who’s That Pal?.
+// Shared pal drawings for the home page, the picker, Who’s That Pal? and
+// the puddle.
 // Listed in home-page order; the picker shuffles them.
 //
 // Each pal has:
@@ -6,7 +7,8 @@
 //   name    display name
 //   looks   screen-reader description after her name
 //   motion  idle animation in styles.css: bob, squish, wobble or slither
-//   frames  per-page SVG viewBoxes: roomy on home, tile-filling in picker
+//   frames  per-page SVG viewBoxes: roomy on home, tile-filling in picker,
+//           snug in the puddle
 //   art     200 x 200 drawing; wrap the face in <g class="face">
 //
 // To add a pal: append here, to SPECIES (with her `tile` color) and to
@@ -24,7 +26,7 @@ export const PALS = [
     name: 'Amy',
     looks: 'a lilac Amoeba proteus blob reaching out with rounded pseudopods',
     motion: 'squish',
-    frames: { home: '0 0 200 200', picker: '14 14 172 172' },
+    frames: { home: '0 0 200 200', picker: '14 14 172 172', puddle: '14 14 172 172' },
     // She has the home page's row to herself, so she's drawn a little bigger.
     homeWidth: 160,
     art: `
@@ -90,7 +92,7 @@ export function palById(id) {
   return PALS.find((pal) => pal.id === id);
 }
 
-// Her drawing as an <svg>, framed for `page` ('home' or 'picker').
+// Her drawing as an <svg>, framed for `page` ('home', 'picker' or 'puddle').
 function drawing(pal, page) {
   const svg = document.createElementNS(SVG, 'svg');
   svg.setAttribute('viewBox', pal.frames[page]);
@@ -124,4 +126,16 @@ export function palTile(pal) {
   svg.setAttribute('aria-hidden', 'true');
   tile.append(svg);
   return tile;
+}
+
+// For the puddle, hidden until the game picks her (puddle.js).
+export function puddlePal(pal) {
+  const svg = drawing(pal, 'puddle');
+  svg.setAttribute('class', `puddle-pal ${pal.motion}`);
+  svg.dataset.pal = pal.id;
+  svg.dataset.name = pal.name;
+  svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', `${pal.name}, ${pal.looks}`);
+  svg.setAttribute('hidden', '');
+  return svg;
 }

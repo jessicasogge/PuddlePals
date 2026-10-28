@@ -3,9 +3,6 @@
 // is always first or always on a later page, then split into pages of eight
 // (PAGE_SIZE in pals.js), shown one at a time with Back and More pals
 // buttons to move between them.
-//
-// Picking a pal doesn't lead anywhere yet: there's no game to open. When
-// there is, turn card() back into a link (as in PetriPals).
 import { SPECIES } from './config.js';
 import { speciesName } from './italics.js';
 import { pageReady, watchLoading } from './loading.js';
@@ -51,10 +48,11 @@ more.addEventListener('click', () => {
 });
 showPage(0);
 
-// Her card: her picture, name and species.
+// Her card: the whole card is the link that picks her and opens the puddle.
 function card(pal) {
-  const box = document.createElement('div');
+  const box = document.createElement('a');
   box.className = 'pal-card';
+  box.href = `./puddle.html?pal=${pal.id}`;
   box.dataset.pal = pal.id;
 
   const name = document.createElement('h2');

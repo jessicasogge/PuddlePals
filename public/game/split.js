@@ -1,11 +1,9 @@
-// A home-page easter egg: tap (or click) a pal and she divides in two, the
-// way an amoeba does (binary fission). She stretches, pinches apart into two
-// smaller daughters that drift away from each other, then they come back
-// together and she's one pal again.
+// Home-page easter egg: tap or click a pal to divide her by binary fission.
+// She stretches, pinches into two smaller daughters that drift apart,
+// then rejoins into one pal.
 //
-// It happens inside her drawing, so her idle bob or wiggle on the <svg> keeps
-// going: her whole drawing goes in a <g>, and a copy of that <g> is the second
-// daughter.
+// Wrap her drawing in a <g> and clone it for the second daughter, keeping
+// the <svg>'s idle bob or wiggle running throughout.
 
 const SVG = 'http://www.w3.org/2000/svg';
 export const SPLIT_MS = 1600;

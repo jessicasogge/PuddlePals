@@ -5,7 +5,7 @@ A cute microbiology game for the browser, about **protists**: the tiny living th
 ## What's here so far
 
 1. **A home page.** Tap the pal there and she divides in two, the way an amoeba does (binary fission).
-2. **A pal picker**. Pick her to play in the puddle.
+2. **A pal picker.** Pick a pal to play in the puddle.
 3. **The puddle.** Move your pal around a puddle eating bacteria (see below).
 4. **Who’s That Pal?**, a quiz on the pals' fun facts. You get one fact with "this pal" in place of her name: tap the pal it's about. There's no score, so it's just for learning.
 

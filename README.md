@@ -5,7 +5,7 @@ A cute microbiology game for the browser, about **protists**: the tiny living th
 ## What's here so far
 
 1. **A home page.** Tap the pal there and she divides in two, the way an amoeba does (binary fission).
-2. **A pal picker**, with one pal so far. Pick her to play in the puddle.
+2. **A pal picker.** Pick a pal to play in the puddle.
 3. **The puddle.** Move your pal around a puddle eating bacteria (see below).
 4. **Who’s That Pal?**, a quiz on the pals' fun facts. You get one fact with "this pal" in place of her name: tap the pal it's about. There's no score, so it's just for learning.
 
@@ -22,6 +22,7 @@ There are five levels. Each one takes 5 more bacteria than the last (20, 25, 30,
 | Pal | Species | Shape |
 |---|---|---|
 | **Amy** | *Amoeba proteus* | Lilac blob reaching out with rounded pseudopods |
+| **Pam** | *Paramecium caudatum* | Pink slipper fringed with beating cilia |
 
 To add a pal: add her drawing to `public/game/pals.js`, her species to `public/game/config.js`, and her quiz facts to `public/game/quiz-facts.js`.
 

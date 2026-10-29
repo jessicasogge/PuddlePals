@@ -83,6 +83,18 @@ describe('dividing', () => {
     expect(document.querySelectorAll('.water .pal-mover')).toHaveLength(2);
   });
 
+  it("keeps her offspring still: Pam's beating cilia stop in her copies", () => {
+    const mover = document.createElement('div');
+    const svg = puddlePal(palById('pam'));
+    mover.append(svg);
+    document.querySelector('.water').append(mover);
+    const pam = cellGroup({ mover, svg, species: SPECIES.pam, isPlayer: true });
+    expect(svg.querySelectorAll('animate').length).toBeGreaterThan(0);
+    const child = pam.divide(RADIUS);
+    expect(child.svg.querySelectorAll('animate')).toHaveLength(0);
+    expect(svg.querySelectorAll('animate').length).toBeGreaterThan(0); // hers keep going
+  });
+
   it('leaves the player where she is', () => {
     const cell = amy();
     cell.divide(RADIUS);

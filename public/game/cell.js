@@ -45,6 +45,9 @@ export function cellGroup({ mover, svg, species, isPlayer }) {
     // the other way and settles again. The player stays where she is.
     divide(puddleRadius) {
       const copy = svg.cloneNode(true);
+      // Offspring sit still, so their cilia don't beat either (and a puddle
+      // full of them stays smooth).
+      for (const wiggle of copy.querySelectorAll('animate')) wiggle.remove();
       const child = cellGroup({ mover: newMover(copy), svg: copy, species, isPlayer: false });
       child.x = group.x;
       child.y = group.y;

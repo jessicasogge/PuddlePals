@@ -25,6 +25,21 @@ export const SPECIES = {
       [-0.314, -0.151, 0.07],
     ],
   },
+  pam: {
+    scientific: 'Paramecium caudatum',
+    color: '#be185d',
+    tile: 'rgba(249, 168, 212, 0.45)',
+    kind: 'ciliate',
+    size: 11, // long and thin, like the PetriPals rods
+    // along her middle, from her narrow back to her wide front
+    body: [
+      [-0.332, 0, 0.119],
+      [-0.174, 0, 0.128],
+      [-0.016, 0, 0.136],
+      [0.142, 0, 0.145],
+      [0.3, 0, 0.153],
+    ],
+  },
 };
 
 // Each level: how many bacteria Amy has to eat herself to finish it (like

@@ -124,7 +124,12 @@ describe('the home page', () => {
   });
 
   it("keeps room for the pals before they're drawn, so the page doesn't jump", () => {
-    const tallest = Math.max(...HOME_PALS.map((pal) => pal.homeWidth ?? 120));
+    // How tall each is drawn: her width, times her home frame's height over its width.
+    const height = (pal) => {
+      const [, , w, h] = pal.frames.home.split(' ').map(Number);
+      return ((pal.homeWidth ?? 120) * h) / w;
+    };
+    const tallest = Math.max(...HOME_PALS.map(height));
     expect(css).toMatch(new RegExp(`\\n\\.friends \\{[^}]*min-height: ${tallest}px;`));
   });
 

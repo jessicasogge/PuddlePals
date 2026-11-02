@@ -44,8 +44,9 @@ body {
   gap: 0.5rem;
   padding: 0 1rem;
   /* script.js draws the pals in after the page first shows. Keep their room
-     (Amy's homeWidth in game/pals.js; she's as tall as she is wide) so the
-     title and buttons don't jump down when she arrives. */
+     (the tallest is Amy: her homeWidth in game/pals.js, since she's as tall
+     as she is wide) so the title and buttons don't jump down when they
+     arrive. */
   min-height: 160px;
 }
 

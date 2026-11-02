@@ -11,8 +11,8 @@ export const QUIZ_FACTS = {
     "Amy wraps pseudopods around food and traps it in a bubble called a food vacuole.",
     "Amy can't swim: she crawls along surfaces at the bottom of ponds.",
     "Amy has just one contractile vacuole, a water-pumping bubble that drifts around inside her.",
-    "Amy can stretch over half a millimeter long, but her clear body makes her hard to see.",
-    "When Amy divides, she rounds up into a ball first, then splits in two.",
+    "Amy has no fixed outline: her body changes shape as she crawls.",
+    "Amy has no oral groove: she wraps her body around food to bring it inside.",
     "Amy eats other protists, including ciliates, and tiny algae.",
     "In 1755, Rösel von Rosenhof described an amoeba like Amy as \"the little Proteus.\"",
     "Amy moves by letting her cytoplasm flow forward into a growing pseudopod."

@@ -57,8 +57,8 @@ describe('a Cyclops', () => {
       cyclops.stroke = i / 100;
       paces.push(cyclops.pace());
     }
-    expect(Math.max(...paces)).toBeCloseTo(1 + PREDATOR.SURGE);
-    expect(Math.min(...paces)).toBeCloseTo(1 - PREDATOR.SURGE);
+    expect(Math.max(...paces)).toBeCloseTo(1 + PREDATORS.cyclops.surge);
+    expect(Math.min(...paces)).toBeCloseTo(1 - PREDATORS.cyclops.surge);
     expect(Math.min(...paces)).toBeGreaterThan(0); // never stops dead
     expect(paces.reduce((a, b) => a + b) / paces.length).toBeCloseTo(1);
     // No sudden jumps: from one moment of a stroke to the next, the speed
@@ -76,7 +76,7 @@ describe('a Cyclops', () => {
   it("can't turn on the spot: it turns the short way, only so fast", () => {
     const cyclops = makePredator(water, { kind: 'cyclops', fx: 0, fy: 0, heading: 0, random: still });
     cyclops.step(0.1, { fx: 0, fy: -0.5 }); // a quarter turn to the left
-    expect(cyclops.heading).toBeCloseTo(-PREDATOR.TURN * 0.1);
+    expect(cyclops.heading).toBeCloseTo(-PREDATORS.cyclops.turn * 0.1);
   });
 
   it('weaves a little, but never far off course', () => {
@@ -92,7 +92,7 @@ describe('a Cyclops', () => {
     expect(cyclops.fx).toBeGreaterThan(0);
     const edge = makePredator(water, { kind: 'cyclops', fx: PREDATOR.EDGE, fy: 0, heading: 0, random: still });
     edge.step(0.1, null);
-    expect(Math.abs(edge.heading)).toBeCloseTo(PREDATOR.TURN * 0.1, 5); // turning back toward the middle
+    expect(Math.abs(edge.heading)).toBeCloseTo(PREDATORS.cyclops.turn * 0.1, 5); // turning back toward the middle
   });
 
   it('stays in the water', () => {
@@ -178,7 +178,35 @@ describe("the roundworm, Amy's predator", () => {
 
   it('keeps still for anyone who has asked for less motion', () => {
     window.matchMedia = (query) => ({ matches: query === '(prefers-reduced-motion: reduce)' });
-    expect(predatorDrawing('roundworm').querySelectorAll('animate')).toHaveLength(0);
+    expect(predatorDrawing('roundworm').querySelectorAll('animate, animateTransform')).toHaveLength(0);
+  });
+
+  it('bends in an S all along its body, its face riding along with its head', () => {
+    const svg = predatorDrawing('roundworm');
+    expect(svg.querySelector('.predator-face animateTransform')).not.toBeNull();
+    // Its middle line, at the start of a swim: one full S from head to tail,
+    // so it's bent one way near its head and the other way near its tail.
+    const gut = svg.querySelector('.worm-gut').getAttribute('d').slice(1).split(' L').map((p) => p.split(' ').map(Number));
+    const xs = gut.map(([x]) => x - 20);
+    expect(Math.min(...xs)).toBeLessThan(-2);
+    expect(Math.max(...xs)).toBeGreaterThan(2);
+  });
+
+  it('glides at a steady pace and turns gently, unlike the Cyclops', () => {
+    const worm = makePredator(water, { kind: 'roundworm', fx: 0, fy: 0, heading: 0, random: still });
+    for (const stroke of [0, 0.25, 0.5, 0.75]) {
+      worm.stroke = stroke;
+      expect(worm.pace()).toBe(1);
+    }
+    expect(PREDATORS.roundworm.turn).toBeLessThan(PREDATORS.cyclops.turn);
+    worm.step(0.1, { fx: 0, fy: -0.5 });
+    expect(worm.heading).toBeCloseTo(-PREDATORS.roundworm.turn * 0.1);
+  });
+
+  it('is about twice as long as Amy is wide, as a real one would be', () => {
+    const length = PREDATORS.roundworm.size * 4;
+    expect(length / SPECIES.amy.size).toBeGreaterThanOrEqual(2);
+    expect(length / SPECIES.amy.size).toBeLessThanOrEqual(4);
   });
 
   it('is longer than Amy is wide, head to tail', () => {

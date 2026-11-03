@@ -17,7 +17,7 @@ export const SPECIES = {
     kind: 'amoeba',
     // Nematodes are listed among Amoeba proteus's predators.
     predator: 'roundworm',
-    size: 9, // about as big as the PetriPals bacteria
+    size: 7, // a little smaller than the PetriPals bacteria, so her roundworm is twice her length
     body: [
       [0, 0.047, 0.279], // the middle of her
       // her pseudopods
@@ -57,23 +57,24 @@ export const LEVELS = [
   { target: 40, predators: 5 },
 ];
 
-// Each pal's predator (game/predator.js): what the directions call it, and
-// how wide it's drawn, as a percent of the puddle (Amy is 9). Each takes
-// about as much room as a PetriPals antibiotic disk with a medium zone of
-// inhibition around it: the Cyclops is 1.4 times as long as it is wide, the
-// roundworm 4 times.
+// Each pal's predator (game/predator.js): what the directions call it; how
+// wide it's drawn, as a percent of the puddle (the Cyclops is 1.4 times as
+// long as it is wide, the roundworm 4 times); how much its speed rises and
+// falls through each stroke; and how fast it can turn, in radians per
+// second. The Cyclops swims in strokes; the roundworm glides along at a
+// steady pace and curves round gently.
 export const PREDATORS = {
-  cyclops: { name: 'Cyclops', size: 10 },
-  roundworm: { name: 'predatory roundworm', size: 3.75 },
+  cyclops: { name: 'Cyclops', size: 10, surge: 0.25, turn: 2.4 },
+  // 15% long: about twice as long as Amy (7%), as a predatory roundworm
+  // that eats amoebae like her would be.
+  roundworm: { name: 'predatory roundworm', size: 3.75, surge: 0, turn: 1.4 },
 };
 
-// How every predator moves: slower than your pal on average, its speed
-// rising and falling gently as it swims, one stroke after another.
+// How every predator moves (each kind's surge and turn are above): slower
+// than your pal on average.
 export const PREDATOR = {
   SPEED: 0.28, // average speed, as a fraction of the puddle radius per second
   STROKE_MS: 1400, // one stroke: speeding up, then easing off
-  SURGE: 0.25, // how much faster (and slower) than average it goes in a stroke
-  TURN: 2.4, // how fast it can turn, in radians per second
   WANDER: 0.6, // how much it weaves off course, in radians
   // It goes after your pal only when she comes this close (a fraction of the
   // puddle radius); otherwise after her offspring, or it drifts around.

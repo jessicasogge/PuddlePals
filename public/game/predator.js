@@ -44,10 +44,12 @@ const CYCLOPS_ART = `
     </g>`;
 
 // The roundworm: slender and pale, tapered at both ends, drawn head up in a
-// 40 x 160 box. A wave runs down it from its steady head to its tail, the
-// way nematodes thrash. `t` goes from its head (0) to its tail (1).
-const WORM = { x: 20, top: 10, length: 140, steps: 8, swim: '1.6s' };
-const wormX = (t, phase) => WORM.x + 5 * t * Math.sin(2 * Math.PI * 1.2 * t - phase);
+// 40 x 160 box. Its whole body bends in an S, and the bends travel from its
+// head to its tail, the way a nematode moves. `t` goes from its head (0) to
+// its tail (1); the bends are a little smaller at its head.
+const WORM = { x: 20, top: 10, length: 140, steps: 16, swim: '1.2s' };
+const wormSway = (t) => 3 + 3 * t;
+const wormX = (t, phase) => WORM.x + wormSway(t) * Math.sin(2 * Math.PI * t - phase);
 const wormY = (t) => WORM.top + WORM.length * t;
 const wormWidth = (t) => Math.max(0.8, 6 * Math.sqrt(Math.sin(Math.PI * t)));
 const points = (from, to, n = 40) => Array.from({ length: n + 1 }, (_, i) => from + ((to - from) * i) / n);
@@ -59,15 +61,17 @@ function wormBody(phase) {
 }
 const wormGut = (phase) => `M${points(0.08, 0.92).map((t) => xy(wormX(t, phase), wormY(t))).join(' L')}`;
 // One swim cycle, as SVG <animate> values (stripped for reduced motion).
-const wormWave = (shape) => {
-  const phases = Array.from({ length: WORM.steps + 1 }, (_, i) => (2 * Math.PI * i) / WORM.steps);
-  return `<animate attributeName="d" dur="${WORM.swim}" repeatCount="indefinite" values="${phases.map(shape).join(';')}" />`;
-};
+const wormPhases = Array.from({ length: WORM.steps + 1 }, (_, i) => (2 * Math.PI * i) / WORM.steps);
+const wormWave = (shape) =>
+  `<animate attributeName="d" dur="${WORM.swim}" repeatCount="indefinite" values="${wormPhases.map(shape).join(';')}" />`;
+// Its face rides along with its head as it sways.
+const wormNod = `<animateTransform attributeName="transform" type="translate" dur="${WORM.swim}" repeatCount="indefinite" ` +
+  `values="${wormPhases.map((phase) => `${(wormX(0, phase) - WORM.x).toFixed(2)} 0`).join(';')}" />`;
 const ROUNDWORM_ART = `
     <path class="worm-body" d="${wormBody(0)}" fill="#f1e7d6" stroke="#9a7b52" stroke-width="1.4" stroke-linejoin="round">${wormWave(wormBody)}</path>
     <path class="worm-gut" d="${wormGut(0)}" fill="none" stroke="#c9a97a" stroke-width="1.6" stroke-linecap="round">${wormWave(wormGut)}</path>
     <!-- a cross little face at its head end -->
-    <g class="predator-face">
+    <g class="predator-face">${wormNod}
       <circle cx="17.6" cy="17" r="1.5" fill="#5b4630" />
       <circle cx="22.4" cy="17" r="1.5" fill="#5b4630" />
       <path d="M16 13.5 L18.8 14.8 M24 13.5 L21.2 14.8" stroke="#5b4630" stroke-width="1" stroke-linecap="round" />
@@ -91,8 +95,9 @@ export const KINDS = {
   roundworm: {
     art: ROUNDWORM_ART,
     box: [40, 160],
-    // All along it: it catches on contact anywhere.
-    outline: points(0.08, 0.92, 6).map((t) => [80 - wormY(t), wormWidth(t) + 2]),
+    // All along it: it catches on contact anywhere. Its circles sit on its
+    // middle line, a little wider than it, to cover its bends.
+    outline: points(0.08, 0.92, 6).map((t) => [80 - wormY(t), wormWidth(t) + wormSway(t) / 2]),
     caught: (name) => `A predatory roundworm caught ${name}! Some small roundworms eat amoebae like ${name}.`,
     plural: 'roundworms',
   },
@@ -107,7 +112,7 @@ export function predatorDrawing(kind) {
   svg.setAttribute('aria-hidden', 'true');
   svg.innerHTML = KINDS[kind].art;
   if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
-    for (const wiggle of svg.querySelectorAll('animate')) wiggle.remove();
+    for (const wiggle of svg.querySelectorAll('animate, animateTransform')) wiggle.remove();
   }
   return svg;
 }
@@ -118,7 +123,7 @@ export function predatorDrawing(kind) {
 // 1, for the tests.
 export function makePredator(water, { kind, fx, fy, heading, random = Math.random }) {
   const { outline, box } = KINDS[kind];
-  const { size } = PREDATORS[kind];
+  const { size, surge, turn: turnRate } = PREDATORS[kind];
   // How far one drawing unit is, as a fraction of the puddle radius.
   const unit = ((size / 100) * 2) / box[0];
   const el = document.createElement('div');
@@ -146,8 +151,9 @@ export function makePredator(water, { kind, fx, fy, heading, random = Math.rando
     head: () => predator.body()[0],
 
     // How fast it's going right now, as a share of its average speed: it
-    // speeds up and eases off smoothly through each stroke, never stopping.
-    pace: () => 1 + PREDATOR.SURGE * Math.sin(2 * Math.PI * predator.stroke),
+    // speeds up and eases off smoothly through each stroke (the roundworm
+    // not at all), never stopping.
+    pace: () => 1 + surge * Math.sin(2 * Math.PI * predator.stroke),
 
     // It just ate: stop to digest for a while, its moving parts still too.
     eat() {
@@ -180,7 +186,7 @@ export function makePredator(water, { kind, fx, fy, heading, random = Math.rando
         : predator.heading + predator.wander * seconds * 2;
       // Turn the short way round, no faster than it can.
       const turn = Math.atan2(Math.sin(wanted - predator.heading), Math.cos(wanted - predator.heading));
-      const most = PREDATOR.TURN * seconds;
+      const most = turnRate * seconds;
       predator.heading += Math.max(-most, Math.min(most, turn));
       const distance = PREDATOR.SPEED * predator.pace() * seconds;
       predator.fx += Math.cos(predator.heading) * distance;

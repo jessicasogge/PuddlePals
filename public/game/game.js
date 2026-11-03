@@ -2,6 +2,7 @@
 // bacteria to divide and grow a colony, keep away from the Cyclops, and the
 // level-complete, win or game-over pop-up.
 import { cellGroup } from './cell.js';
+import { celebrate } from './celebrate.js';
 import { makeColony, moveGroups } from './colony.js';
 import { CYCLOPS, GAME, LEVELS } from './config.js';
 import { cyclopsAround, preyFor } from './cyclops.js';
@@ -128,6 +129,7 @@ export function playPuddle({
 
   function win() {
     stop();
+    celebrate(playerMover, { big: level === LEVELS.length });
     // The pop-up waits only until the newest cell has finished sliding into place.
     setTimeout(() => {
       showFact(pal);

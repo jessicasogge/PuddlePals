@@ -8,6 +8,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['public/**/*.js'],
+      exclude: ['public/game/vendor/**'], // confetti, copied in as is
       reporter: ['text-summary', 'text'],
       // Every line is tested.
       thresholds: { lines: 100, statements: 100, functions: 100, branches: 95 },

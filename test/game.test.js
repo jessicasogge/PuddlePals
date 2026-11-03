@@ -24,6 +24,7 @@ vi.mock('../public/game/cyclops.js', async (importActual) => ({
   ...(await importActual()),
   cyclopsAround: vi.fn(() => fake.hunters),
 }));
+vi.mock('../public/game/celebrate.js', () => ({ celebrate: vi.fn() }));
 vi.mock('../public/game/keyboard.js', () => ({
   arrowKeys: vi.fn(() => ({ direction: () => [0, 0], stop: vi.fn() })),
 }));
@@ -35,6 +36,7 @@ vi.mock('../public/game/touch.js', () => ({
 const { playPuddle, touching } = await import('../public/game/game.js');
 const { cyclopsAround } = await import('../public/game/cyclops.js');
 const { steer } = await import('../public/game/touch.js');
+const { celebrate } = await import('../public/game/celebrate.js');
 
 const page = readFileSync(resolve(process.cwd(), 'public/puddle.html'), 'utf8');
 const body = page.slice(page.indexOf('<body'), page.indexOf('</body>'));
@@ -173,6 +175,8 @@ describe('winning', () => {
     fake.options.onLeaderEat(LEVELS[0].target);
     frame();
     expect(food.stop).toHaveBeenCalled();
+    // A little burst of confetti from her right away.
+    expect(celebrate).toHaveBeenCalledWith(document.querySelector('.pal-mover'), { big: false });
     expect(banner.hidden).toBe(true);
     vi.advanceTimersByTime(GAME.DIVIDE_MS);
     expect(banner.hidden).toBe(false);
@@ -191,6 +195,7 @@ describe('winning', () => {
     frame();
     vi.advanceTimersByTime(GAME.DIVIDE_MS);
     expect(banner.querySelector('h2').textContent).toBe('You won!');
+    expect(celebrate).toHaveBeenCalledWith(document.querySelector('.pal-mover'), { big: true });
     expect(banner.querySelector('.win-message').textContent).toBe(
       `You beat all ${last} levels! Amy ate ${LEVELS[last - 1].target} bacteria with the Cyclopes all around.`);
     expect(banner.querySelector('.play-again').textContent).toBe('Play again');

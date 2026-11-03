@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 // A colony (colony.js): Amy and the offspring she grows, eating bacteria,
-// dividing, being eaten by the Cyclops, and moving in the puddle.
+// dividing, being eaten by a predator, and moving in the puddle.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cellGroup } from '../public/game/cell.js';
 import { makeColony, moveGroups, showPop } from '../public/game/colony.js';
@@ -144,7 +144,7 @@ describe('being eaten', () => {
     return { c, child, onPop };
   }
 
-  it('pops an offspring a Cyclops head touches, takes it out of the puddle, and says how many', () => {
+  it("pops an offspring a predator's head touches, takes it out of the puddle, and says how many", () => {
     const { c, child, onPop } = withOffspring();
     expect(c.popTouching([[100, 0, 5]])).toBe(1);
     expect(c.cellCount()).toBe(1);

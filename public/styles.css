@@ -1134,7 +1134,7 @@ html.input-keys .for-keys {
   display: inline;
 }
 
-/* The player's pal after the Cyclops catches her. */
+/* The player's pal after her predator catches her. */
 .pal-mover.killed {
   filter: grayscale(1);
   opacity: 0.45;
@@ -1248,7 +1248,7 @@ html.input-keys .for-keys {
   }
 }
 
-/* An offspring cell eaten by the Cyclops (game/colony.js): a ring
+/* An offspring cell eaten by a predator (game/colony.js): a ring
    in the pal's color that bursts outward and fades. */
 .pop {
   position: absolute;
@@ -1316,27 +1316,30 @@ html.input-keys .for-keys {
   }
 }
 
-/* The Cyclops (game/cyclops.js): placed and turned by the game, over the
-   bacteria and the amoebas it's chasing. Its feelers sway gently. */
-.cyclops {
+/* A predator (game/predator.js): placed and turned by the game, over the
+   bacteria and the cells it's chasing. The Cyclops's feelers sway gently;
+   the roundworm's wave is in its drawing. */
+.predator {
   position: absolute;
   z-index: 2;
-  /* Its width is CYCLOPS.SIZE in config.js, set by game/cyclops.js. */
+  /* Its width is its `size` in PREDATORS in config.js, set by
+     game/predator.js. */
   transform: translate(-50%, -50%) rotate(var(--turn, 0deg));
   pointer-events: none;
   filter: drop-shadow(0 3px 4px rgba(67, 20, 7, 0.3));
 }
 
-/* Digesting: it sits still, its feelers stop, and it looks a little dozy. */
-.cyclops.full .antennae {
+/* Digesting: it sits still, its moving parts stop, and it looks a little
+   dozy. */
+.predator.full .antennae {
   animation: none;
 }
 
-.cyclops.full {
+.predator.full {
   opacity: 0.8;
 }
 
-.cyclops svg {
+.predator svg {
   display: block;
   width: 100%;
   height: auto;
@@ -1363,7 +1366,7 @@ html.input-keys .for-keys {
 /* For anyone who'd rather not have motion: no jiggling or swaying. */
 @media (prefers-reduced-motion: reduce) {
   .bacterium,
-  .cyclops .antennae {
+  .predator .antennae {
     animation: none;
   }
 }

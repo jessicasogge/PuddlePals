@@ -11,11 +11,16 @@ A cute microbiology game for the browser, about **protists**: the tiny living th
 
 ## The puddle
 
-Use the arrow keys, or on a touch screen, touch the puddle and slide your finger. Like Phage Attack in PetriPals, your pal has to eat a set number of bacteria herself to finish each level. Every time an amoeba eats a bacterium, it divides in two. The amoebas left behind eat and divide too, but what they eat doesn't count.
+Use the arrow keys, or on a touch screen, touch the puddle and slide your finger. Like Phage Attack in PetriPals, your pal has to eat a set number of bacteria herself to finish each level. Every time a cell eats a bacterium, it divides in two. The offspring left behind eat and divide too, but what they eat doesn't count.
 
-Watch out for the **Cyclops**: a copepod, a tiny one-eyed crustacean that hunts protists. It's bigger than your pal and swims smoothly after its prey. It goes after your offspring, and stops to digest each one it eats, so the amoebas you leave behind buy you time. If your pal comes too close, it comes after her. If it catches her, it's game over.
+Watch out for your pal's **predator**. It's bigger than her and swims smoothly after its prey. It goes after her offspring, and stops to digest each one it eats, so the offspring she leaves behind buy her time. If she comes too close, it comes after her. If it catches her, it's game over.
 
-There are five levels. Each one takes 5 more bacteria than the last (20, 25, 30, 35, then 40), with one Cyclops on level 1, two on level 2, and so on up to five on level 5. The numbers are in `public/game/config.js` (`LEVELS`, `CYCLOPS` and `GAME`).
+| Pal | Predator |
+|---|---|
+| Amy | A **predatory roundworm**: a slender, pale worm, tapered at both ends. Nematodes are listed among *Amoeba proteus*'s predators; it's not meant as any one named species, and the way it patrols is the game's own. |
+| Pam | A **Cyclops**: a copepod, a tiny one-eyed crustacean that hunts protists. |
+
+There are five levels. Each one takes 5 more bacteria than the last (20, 25, 30, 35, then 40), with one predator on level 1, two on level 2, and so on up to five on level 5. The numbers are in `public/game/config.js` (`LEVELS`, `PREDATORS`, `PREDATOR` and `GAME`).
 
 ## The pals
 

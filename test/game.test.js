@@ -1,14 +1,14 @@
 // @vitest-environment jsdom
 // game.js runs a level in the puddle: steer, grow the colony, keep away from
-// the Cyclops, and show the level-complete, win or game-over pop-up. These
+// her predator, and show the level-complete, win or game-over pop-up. These
 // tests load the real puddle page into jsdom and stand in for the colony,
-// the Cyclopes and steering, so each test can say exactly what happens ("the
-// colony reached 4 cells", "a Cyclops touched Amy") and then check what the
+// the predators and steering, so each test can say exactly what happens
+// ("Amy ate 20 bacteria", "a roundworm touched Amy") and then check what the
 // player sees.
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { CYCLOPS, GAME, LEVELS, SPECIES } from '../public/game/config.js';
+import { GAME, LEVELS, PREDATOR, SPECIES } from '../public/game/config.js';
 
 const fake = vi.hoisted(() => ({ colony: null, hunters: [] }));
 
@@ -20,9 +20,9 @@ vi.mock('../public/game/colony.js', () => ({
   moveGroups: vi.fn(),
 }));
 vi.mock('../public/game/cell.js', () => ({ cellGroup: vi.fn(() => fake.leader) }));
-vi.mock('../public/game/cyclops.js', async (importActual) => ({
+vi.mock('../public/game/predator.js', async (importActual) => ({
   ...(await importActual()),
-  cyclopsAround: vi.fn(() => fake.hunters),
+  predatorsAround: vi.fn(() => fake.hunters),
 }));
 vi.mock('../public/game/celebrate.js', () => ({ celebrate: vi.fn() }));
 vi.mock('../public/game/keyboard.js', () => ({
@@ -34,7 +34,7 @@ vi.mock('../public/game/touch.js', () => ({
 }));
 
 const { playPuddle, touching } = await import('../public/game/game.js');
-const { cyclopsAround } = await import('../public/game/cyclops.js');
+const { predatorsAround } = await import('../public/game/predator.js');
 const { steer } = await import('../public/game/touch.js');
 const { celebrate } = await import('../public/game/celebrate.js');
 
@@ -61,7 +61,7 @@ function makeFakeColony() {
   };
 }
 
-// A stand-in Cyclops, far from Amy unless a test moves it.
+// A stand-in predator, far from your pal unless a test moves it.
 function makeHunter() {
   return {
     fx: 0.8, fy: 0, full: 0,
@@ -72,11 +72,11 @@ function makeHunter() {
   };
 }
 
-function start({ level = 1, target } = {}) {
+function start({ level = 1, target, pal = 'amy' } = {}) {
   const svg = document.createElement('div');
-  svg.dataset.pal = 'amy';
-  svg.dataset.name = 'Amy';
-  playPuddle({ you: { svg, species: SPECIES.amy }, food, level, target, random: () => 0 });
+  svg.dataset.pal = pal;
+  svg.dataset.name = pal[0].toUpperCase() + pal.slice(1);
+  playPuddle({ you: { svg, species: SPECIES[pal] }, food, level, target, random: () => 0 });
   return document.querySelector('.win-banner');
 }
 
@@ -142,13 +142,15 @@ describe('a level', () => {
     expect(LEVELS.map((level) => level.target)).toEqual([20, 25, 30, 35, 40]);
   });
 
-  it('has one Cyclops per level number', () => {
-    expect(LEVELS.map((level) => level.cyclops)).toEqual(LEVELS.map((_, i) => i + 1));
+  it('has one predator per level number', () => {
+    expect(LEVELS.map((level) => level.predators)).toEqual(LEVELS.map((_, i) => i + 1));
   });
 
-  it("puts the level's Cyclopes in the puddle", () => {
+  it("puts the level's predators in the puddle: roundworms for Amy, Cyclopes for Pam", () => {
     start({ level: 3 });
-    expect(cyclopsAround).toHaveBeenCalledWith(document.querySelector('.water'), LEVELS[2].cyclops, expect.any(Function));
+    expect(predatorsAround).toHaveBeenLastCalledWith(document.querySelector('.water'), 'roundworm', LEVELS[2].predators, expect.any(Function));
+    start({ level: 2, pal: 'pam' });
+    expect(predatorsAround).toHaveBeenLastCalledWith(document.querySelector('.water'), 'cyclops', LEVELS[1].predators, expect.any(Function));
   });
 
   it('steers Amy, and divides her when she has eaten', () => {
@@ -159,9 +161,9 @@ describe('a level', () => {
     expect(fake.colony.divideLeader).toHaveBeenCalled();
   });
 
-  it('gives Amy a head start before the Cyclopes move', () => {
+  it('gives Amy a head start before the predators move', () => {
     start();
-    run(CYCLOPS.START_MS - 100);
+    run(PREDATOR.START_MS - 100);
     expect(fake.hunters[0].step).not.toHaveBeenCalled();
     run(200);
     expect(fake.hunters[0].step).toHaveBeenCalled();
@@ -197,7 +199,7 @@ describe('winning', () => {
     expect(banner.querySelector('h2').textContent).toBe('You won!');
     expect(celebrate).toHaveBeenCalledWith(document.querySelector('.pal-mover'), { big: true });
     expect(banner.querySelector('.win-message').textContent).toBe(
-      `You beat all ${last} levels! Amy ate ${LEVELS[last - 1].target} bacteria with the Cyclopes all around.`);
+      `You beat all ${last} levels! Amy ate ${LEVELS[last - 1].target} bacteria with the roundworms all around.`);
     expect(banner.querySelector('.play-again').textContent).toBe('Play again');
     banner.querySelector('.play-again').click();
     expect(location.href).toBe('http://localhost/puddle.html?pal=amy&level=1');
@@ -208,17 +210,17 @@ describe('winning', () => {
     fake.options.onLeaderEat(LEVELS[0].target);
     frame();
     fake.colony.eat.mockClear();
-    run(CYCLOPS.START_MS + 100);
+    run(PREDATOR.START_MS + 100);
     expect(fake.colony.eat).not.toHaveBeenCalled();
     expect(fake.hunters[0].step).not.toHaveBeenCalled();
   });
 });
 
-describe('the Cyclops', () => {
+describe('the predator', () => {
   it('eats offspring its head touches, then stops to digest and leaves the rest alone for now', () => {
     start();
     fake.colony.popTouching.mockReturnValue(1);
-    run(CYCLOPS.START_MS + 50);
+    run(PREDATOR.START_MS + 50);
     expect(fake.colony.popTouching).toHaveBeenCalledTimes(1);
     expect(fake.colony.popTouching).toHaveBeenCalledWith([[160, 0, 20]]) // in px: the puddle is 400px across;
     expect(fake.hunters[0].eat).toHaveBeenCalledTimes(1);
@@ -229,14 +231,14 @@ describe('the Cyclops', () => {
   it("goes after Amy's offspring when she's far away", () => {
     start();
     fake.colony.groups.push(fake.leader, { x: 200, y: 0 });
-    run(CYCLOPS.START_MS + 50);
+    run(PREDATOR.START_MS + 50);
     expect(fake.hunters[0].step).toHaveBeenCalledWith(expect.any(Number), { fx: 1, fy: 0 });
   });
 
   it("is game over when it catches Amy, saying how many offspring it ate first", () => {
     const banner = start({ level: 2 });
     fake.colony.popTouching.mockReturnValueOnce(2);
-    run(CYCLOPS.START_MS + 50);
+    run(PREDATOR.START_MS + 50);
     fake.hunters[0].body = () => [[0, 0, 0.1]];
     frame(50);
     expect(document.querySelector('.pal-mover').classList).toContain('killed');
@@ -244,7 +246,7 @@ describe('the Cyclops', () => {
     expect(banner.hidden).toBe(false);
     expect(banner.querySelector('h2').textContent).toBe('Game over');
     expect(banner.querySelector('.win-message').textContent).toBe(
-      'A Cyclops caught Amy! These tiny one-eyed crustaceans hunt protists in ponds and puddles. It ate 2 of her offspring first.');
+      'A predatory roundworm caught Amy! Some small roundworms eat amoebae like Amy. It ate 2 of her offspring first.');
     expect(banner.querySelector('.play-again').textContent).toBe('Try level 2 again');
     expect(banner.querySelector('.start-over').hidden).toBe(false);
     banner.querySelector('.play-again').click();
@@ -256,11 +258,20 @@ describe('the Cyclops', () => {
   it("doesn't offer to start over on level 1, where that would just try again", () => {
     const banner = start({ level: 1 });
     fake.hunters[0].body = () => [[0, 0, 0.1]];
-    run(CYCLOPS.START_MS + 50);
+    run(PREDATOR.START_MS + 50);
     vi.advanceTimersByTime(500);
     expect(banner.querySelector('.win-message').textContent).toBe(
-      'A Cyclops caught Amy! These tiny one-eyed crustaceans hunt protists in ponds and puddles.');
+      'A predatory roundworm caught Amy! Some small roundworms eat amoebae like Amy.');
     expect(banner.querySelector('.start-over').hidden).toBe(true);
+  });
+
+  it("says it was a Cyclops when one catches Pam", () => {
+    const banner = start({ pal: 'pam' });
+    fake.hunters[0].body = () => [[0, 0, 0.1]];
+    run(PREDATOR.START_MS + 50);
+    vi.advanceTimersByTime(500);
+    expect(banner.querySelector('.win-message').textContent).toBe(
+      'A Cyclops caught Pam! These tiny one-eyed crustaceans hunt protists in ponds and puddles.');
   });
 });
 

@@ -4,6 +4,7 @@
 // `color` is for her name when it's filled in on Who’s That Pal?
 // `tile` is the background of her tile on the picker and the quiz
 // `kind` is what sort of protist she is
+// `predator` is what hunts her in the puddle (PREDATORS below)
 // `size` is how wide she's drawn in the puddle, as a percent of the puddle
 // `body` traces her drawing's outline as circles [x, y, radius], in
 // fractions of the drawing's width from its center. It's what counts as
@@ -14,7 +15,9 @@ export const SPECIES = {
     color: '#6d28d9',
     tile: 'rgba(196, 181, 253, 0.45)',
     kind: 'amoeba',
-    size: 9, // about as big as the PetriPals bacteria
+    // Nematodes are listed among Amoeba proteus's predators.
+    predator: 'roundworm',
+    size: 7, // a little smaller than the PetriPals bacteria, so her roundworm is twice her length
     body: [
       [0, 0.047, 0.279], // the middle of her
       // her pseudopods
@@ -30,6 +33,7 @@ export const SPECIES = {
     color: '#be185d',
     tile: 'rgba(249, 168, 212, 0.45)',
     kind: 'ciliate',
+    predator: 'cyclops',
     size: 11, // long and thin, like the PetriPals rods
     // along her middle, from her narrow back to her wide front
     body: [
@@ -42,35 +46,41 @@ export const SPECIES = {
   },
 };
 
-// Each level: how many bacteria Amy has to eat herself to finish it (like
-// PetriPals' Phage Attack, 5 more each level), and one Cyclops per level
-// number.
+// Each level: how many bacteria your pal has to eat herself to finish it
+// (like PetriPals' Phage Attack, 5 more each level), and one predator per
+// level number.
 export const LEVELS = [
-  { target: 20, cyclops: 1 },
-  { target: 25, cyclops: 2 },
-  { target: 30, cyclops: 3 },
-  { target: 35, cyclops: 4 },
-  { target: 40, cyclops: 5 },
+  { target: 20, predators: 1 },
+  { target: 25, predators: 2 },
+  { target: 30, predators: 3 },
+  { target: 35, predators: 4 },
+  { target: 40, predators: 5 },
 ];
 
-// The Cyclops (game/cyclops.js): a copepod, a tiny one-eyed crustacean that
-// hunts protists. Bigger than Amy and slower on average. Its speed rises
-// and falls gently as it swims, one stroke after another.
-export const CYCLOPS = {
-  // How wide it's drawn, as a percent of the puddle (Amy is 9). It's 1.4 times
-  // as long, about as much room as a PetriPals antibiotic disk with a
-  // medium zone of inhibition around it.
-  SIZE: 10,
+// Each pal's predator (game/predator.js): what the directions call it; how
+// wide it's drawn, as a percent of the puddle (the Cyclops is 1.4 times as
+// long as it is wide, the roundworm 4 times); how much its speed rises and
+// falls through each stroke; and how fast it can turn, in radians per
+// second. The Cyclops swims in strokes; the roundworm glides along at a
+// steady pace and curves round gently.
+export const PREDATORS = {
+  cyclops: { name: 'Cyclops', size: 10, surge: 0.25, turn: 2.4 },
+  // 15% long: about twice as long as Amy (7%), as a predatory roundworm
+  // that eats amoebae like her would be.
+  roundworm: { name: 'predatory roundworm', size: 3.75, surge: 0, turn: 1.4 },
+};
+
+// How every predator moves (each kind's surge and turn are above): slower
+// than your pal on average.
+export const PREDATOR = {
   SPEED: 0.28, // average speed, as a fraction of the puddle radius per second
   STROKE_MS: 1400, // one stroke: speeding up, then easing off
-  SURGE: 0.25, // how much faster (and slower) than average it goes in a stroke
-  TURN: 2.4, // how fast it can turn, in radians per second
   WANDER: 0.6, // how much it weaves off course, in radians
-  // It goes after Amy only when she comes this close (a fraction of the
+  // It goes after your pal only when she comes this close (a fraction of the
   // puddle radius); otherwise after her offspring, or it drifts around.
   NOTICE: 0.5,
   START_MS: 1500, // it waits this long before it starts, so you get a head start
-  FULL_MS: 2500, // after eating an amoeba it stops this long to digest
+  FULL_MS: 2500, // after eating one of her offspring it stops this long to digest
   EDGE: 0.8, // how far from the middle it can go, as a fraction of the radius
 };
 

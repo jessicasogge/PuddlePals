@@ -33,10 +33,17 @@ describe('the puddle page', () => {
     expect(document.querySelector('.pal-name').style.color).toBe('rgb(109, 40, 217)');
     expect(document.querySelector('.species-name i').textContent).toBe('Amoeba proteus');
     expect(document.querySelector('.pal-named').textContent).toBe('Amy');
+    // Her own predator in the directions.
+    expect(document.querySelector('.predator-name').textContent).toBe('predatory roundworm');
     expect(document.querySelectorAll('.bacterium')).toHaveLength(GAME.BACTERIA);
     expect(playPuddle).toHaveBeenCalledWith(expect.objectContaining({ level: 1 }));
     expect(playPuddle.mock.calls[0][0].you.svg.dataset.pal).toBe('amy');
     expect(document.querySelector('.loading-overlay').hidden).toBe(true);
+  });
+
+  it("names Pam's predator, the Cyclops, in her directions", async () => {
+    await open('?pal=pam');
+    expect(document.querySelector('.predator-name').textContent).toBe('Cyclops');
   });
 
   it('starts the level in the address, kept between the first and the last', async () => {

@@ -3,7 +3,7 @@
 //   puddle.html?pal=amy           level 1
 //   puddle.html?pal=amy&level=2   level 2
 import { scatterBacteria } from './bacteria.js';
-import { GAME, LEVELS, SPECIES } from './config.js';
+import { GAME, LEVELS, PREDATORS, SPECIES } from './config.js';
 import { playPuddle } from './game.js';
 import { speciesName } from './italics.js';
 import { pageReady, watchLoading } from './loading.js';
@@ -39,6 +39,7 @@ if (!pal) {
   title.style.color = species.color;
   document.querySelector('.species-name').replaceChildren(...speciesName(species.scientific));
   for (const el of document.querySelectorAll('.pal-named')) el.textContent = pal.dataset.name;
+  for (const el of document.querySelectorAll('.predator-name')) el.textContent = PREDATORS[species.predator].name;
   playPuddle({ you: { svg: pal, species }, food: scatterBacteria({ count: GAME.BACTERIA }), level });
   // The puddle is set up: take the loading card away.
   pageReady();

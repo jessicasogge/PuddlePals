@@ -2,7 +2,7 @@
 // trackpad. Touch anywhere on the puddle and she stays put, then slide your
 // finger and she moves the same way, as far as your finger moves (up to a top
 // speed). Nothing jumps when you touch down, and your finger can stay well
-// away from her and the Cyclops. Lift and touch again to keep going.
+// away from her and her predator. Lift and touch again to keep going.
 //
 // A mouse steers right where it points instead: press and hold, and she
 // swims there at her normal speed, stopping when she gets there.

@@ -1,14 +1,14 @@
-// The puddle game loop: steer Amy with the arrow keys or by touch, eat
-// bacteria to divide and grow a colony, keep away from the Cyclops, and the
+// The puddle game loop: steer your pal with the arrow keys or by touch, eat
+// bacteria (each meal divides her), keep away from her predator, and the
 // level-complete, win or game-over pop-up.
 import { cellGroup } from './cell.js';
 import { celebrate } from './celebrate.js';
 import { makeColony, moveGroups } from './colony.js';
-import { CYCLOPS, GAME, LEVELS } from './config.js';
-import { cyclopsAround, preyFor } from './cyclops.js';
+import { GAME, LEVELS, PREDATOR } from './config.js';
 import { showFact } from './facts.js';
 import { arrowKeys } from './keyboard.js';
 import { goTo } from './loading.js';
+import { KINDS, predatorsAround, preyFor } from './predator.js';
 import { steer, touchSteering } from './touch.js';
 
 // Whether any of circles `a` touches any of circles `b` (all [x, y, r]).
@@ -18,7 +18,7 @@ export const touching = (a, b) => a.some(([ax, ay, ar]) => b.some(([bx, by, br])
 // from config.js. `level` is which level this is (1 to LEVELS.length), and
 // `target` how many bacteria she has to eat herself to beat it (her
 // offspring eat and divide too, but don't count). `random` returns 0 to 1, for
-// the tests. Returns the Cyclopes, for the tests.
+// the tests. Returns the predators and the colony, for the tests.
 export function playPuddle({
   you, food, level = 1, target = LEVELS[level - 1].target, random = Math.random,
 }) {
@@ -42,14 +42,16 @@ export function playPuddle({
       updateCounter();
     },
   });
-  const hunters = cyclopsAround(water, LEVELS[level - 1].cyclops, random);
+  // Her own predator (`predator` in config.js), one per level number.
+  const predator = KINDS[you.species.predator];
+  const hunters = predatorsAround(water, you.species.predator, LEVELS[level - 1].predators, random);
 
   let finished = false;
   let lastTime = null;
   let elapsed = 0; // ms since the start
-  let lost = 0; // offspring the Cyclopes have eaten
+  let lost = 0; // offspring the predators have eaten
   const keys = arrowKeys();
-  // Drag with a finger anywhere on the puddle, muddy bank included (or hold
+  // Drag with a finger anywhere on the puddle, its edge included (or hold
   // a mouse button where to go).
   const touch = touchSteering(water, water.closest('.puddle') ?? water);
 
@@ -85,7 +87,7 @@ export function playPuddle({
 
     if (!finished) {
       elapsed += seconds * 1000;
-      if (elapsed >= CYCLOPS.START_MS) hunt(seconds, radius);
+      if (elapsed >= PREDATOR.START_MS) hunt(seconds, radius);
     }
 
     if (!finished) {
@@ -97,23 +99,23 @@ export function playPuddle({
     requestAnimationFrame(step);
   }
 
-  // Every Cyclops swims after its prey and eats any offspring its head
-  // touches, then stops to digest. Touching Amy herself is game over.
+  // Every predator swims after its prey and eats any offspring its head
+  // touches, then stops to digest. Touching your pal herself is game over.
   function hunt(seconds, radius) {
-    const amy = { fx: leader.x / radius, fy: leader.y / radius };
+    const her = { fx: leader.x / radius, fy: leader.y / radius };
     const px = (circle) => circle.map((value) => value * radius);
-    for (const cyclops of hunters) {
+    for (const hunter of hunters) {
       const offspring = colony.groups
         .filter((group) => group !== leader)
         .map((group) => ({ fx: group.x / radius, fy: group.y / radius }));
-      cyclops.step(seconds, preyFor(cyclops.fx, cyclops.fy, offspring, amy));
+      hunter.step(seconds, preyFor(hunter.fx, hunter.fy, offspring, her));
       // A full one is busy digesting, and doesn't eat again until it's done.
-      if (cyclops.full <= 0) {
-        const gobbled = colony.popTouching([px(cyclops.head())]);
-        if (gobbled > 0) cyclops.eat();
+      if (hunter.full <= 0) {
+        const gobbled = colony.popTouching([px(hunter.head())]);
+        if (gobbled > 0) hunter.eat();
         lost += gobbled;
       }
-      if (touching(leader.body(), cyclops.body().map(px))) {
+      if (touching(leader.body(), hunter.body().map(px))) {
         lose();
         return;
       }
@@ -138,7 +140,7 @@ export function playPuddle({
         showBanner(`Level ${level} complete!`, `${name} ate ${target} bacteria!`, `Play level ${nextLevel}`);
       } else {
         nextLevel = 1;
-        showBanner('You won!', `You beat all ${LEVELS.length} levels! ${name} ate ${target} bacteria with the Cyclopes all around.`, 'Play again');
+        showBanner('You won!', `You beat all ${LEVELS.length} levels! ${name} ate ${target} bacteria with the ${predator.plural} all around.`, 'Play again');
       }
     }, Math.max(0, GAME.DIVIDE_MS - colony.sinceAnyDivision));
   }
@@ -150,7 +152,7 @@ export function playPuddle({
       showFact(pal);
       const offspring = lost === 0 ? '' : ` It ate ${lost} of her offspring first.`;
       showBanner('Game over',
-        `A Cyclops caught ${name}! These tiny one-eyed crustaceans hunt protists in ponds and puddles.${offspring}`,
+        `${predator.caught(name)}${offspring}`,
         `Try level ${level} again`, { startOver: level > 1 }); // on level 1 "Start over" would just try again
     }, 500);
   }

@@ -10,9 +10,9 @@ export const QUIZ_FACTS = {
     "Amy's species name refers to Proteus, a Greek sea god who could change shape.",
     "Amy wraps pseudopods around food and traps it in a bubble called a food vacuole.",
     "Amy can't swim: she crawls along surfaces at the bottom of ponds.",
-    "Amy has just one contractile vacuole, a water-pumping bubble that drifts around inside her.",
-    "Amy has no fixed outline: her body changes shape as she crawls.",
-    "Amy has no oral groove: she wraps her body around food to bring it inside.",
+    "Amy is huge for a single cell: often about half a millimeter long.",
+    "Amy has no lasting front or back: whichever way she reaches out becomes her front.",
+    "Amy's name comes from amoibē, the Greek word for change.",
     "Amy eats other protists, including ciliates, and tiny algae.",
     "In 1755, Rösel von Rosenhof described an amoeba like Amy as \"the little Proteus.\"",
     "Amy moves by letting her cytoplasm flow forward into a growing pseudopod."
@@ -27,7 +27,19 @@ export const QUIZ_FACTS = {
     "Pam's two contractile vacuoles have star-like canals and pump out extra water.",
     "Pam can pair with a compatible partner and swap genetic material during conjugation.",
     "Pam's species name, caudatum, means \"tailed,\" for her tuft of longer back cilia.",
-    "Pam spins like a corkscrew as she swims.",
+    "Pam can swim backward by reversing the beat of her cilia.",
     "Pam can be swallowed whole by *Didinium*, a predatory ciliate."
+  ],
+  grace: [
+    "Grace has a red eyespot that helps her steer toward light.",
+    "Grace's green chloroplasts let her make food from sunlight, like a plant.",
+    "In the dark, Grace can live like an animal, taking in food from the water.",
+    "Grace swims by whipping one long flagellum at her front end.",
+    "Grace can squirm and change shape, a wriggle called euglenoid movement.",
+    "Grace stores food as paramylon, a starch-like substance made by euglenids.",
+    "Grace's flexible outer layer, the pellicle, is made of strips that spiral around her.",
+    "Grace's genus name, Euglena, comes from Greek for \"good eyeball,\" after her eyespot.",
+    "The predatory rotifer *Asplanchna* eats Grace's kind, but can't survive on her alone.",
+    "Kept in the dark, Grace's chloroplasts shrink away, then turn green again in the light.",
   ],
 };

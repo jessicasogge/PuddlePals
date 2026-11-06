@@ -46,6 +46,11 @@ describe('the puddle page', () => {
     expect(document.querySelector('.predator-name').textContent).toBe('Cyclops');
   });
 
+  it("names Grace's predator, the predatory rotifer, in her directions", async () => {
+    await open('?pal=grace');
+    expect(document.querySelector('.predator-name').textContent).toBe('predatory rotifer');
+  });
+
   it('starts the level in the address, kept between the first and the last', async () => {
     await open('?pal=amy&level=3');
     expect(playPuddle).toHaveBeenLastCalledWith(expect.objectContaining({ level: 3 }));

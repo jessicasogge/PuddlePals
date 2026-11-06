@@ -265,6 +265,15 @@ describe('the predator', () => {
     expect(banner.querySelector('.start-over').hidden).toBe(true);
   });
 
+  it('says it was a predatory rotifer when one catches Grace', () => {
+    const banner = start({ pal: 'grace' });
+    fake.hunters[0].body = () => [[0, 0, 0.1]];
+    run(PREDATOR.START_MS + 50);
+    vi.advanceTimersByTime(500);
+    expect(banner.querySelector('.win-message').textContent).toBe(
+      "A predatory rotifer caught Grace! Rotifers like Asplanchna eat Euglena, though they can't live on Euglena alone.");
+  });
+
   it("says it was a Cyclops when one catches Pam", () => {
     const banner = start({ pal: 'pam' });
     fake.hunters[0].body = () => [[0, 0, 0.1]];

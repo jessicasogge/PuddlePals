@@ -237,3 +237,48 @@ describe("the roundworm, Amy's predator", () => {
     expect(paused).toBe(false);
   });
 });
+
+describe("the rotifer, Grace's predator", () => {
+  it("is Grace's, a predatory rotifer like Asplanchna, which eats Euglena in the lab", () => {
+    expect(SPECIES.grace.predator).toBe('rotifer');
+    expect(PREDATORS.rotifer.name).toBe('predatory rotifer');
+    expect(KINDS.rotifer.caught('Grace')).toBe(
+      "A predatory rotifer caught Grace! Rotifers like Asplanchna eat Euglena, though they can't live on Euglena alone.");
+  });
+
+  it('has a crown of beating cilia, jaws and a stomach, and keeps still for reduced motion', () => {
+    const svg = predatorDrawing('rotifer');
+    expect(svg.getAttribute('viewBox')).toBe('0 0 100 150');
+    expect(svg.querySelectorAll('.corona animate').length).toBeGreaterThan(10);
+    window.matchMedia = (query) => ({ matches: query === '(prefers-reduced-motion: reduce)' });
+    try {
+      expect(predatorDrawing('rotifer').querySelectorAll('animate')).toHaveLength(0);
+    } finally {
+      delete window.matchMedia;
+    }
+  });
+
+  it("is about twice Grace's length, taking about as much room as the other predators", () => {
+    // Grace's body is about 68% of her drawing's width (the rest is her flagellum).
+    const grace = SPECIES.grace.size * 0.68;
+    const rotifer = PREDATORS.rotifer.size * 1.5;
+    expect(rotifer / grace).toBeGreaterThanOrEqual(2);
+    expect(rotifer / grace).toBeLessThan(3);
+    // Within a few percent of the puddle of the Cyclops's and the roundworm's lengths.
+    expect(Math.abs(rotifer - PREDATORS.cyclops.size * 1.4)).toBeLessThan(3);
+    expect(Math.abs(rotifer - PREDATORS.roundworm.size * 4)).toBeLessThan(3);
+  });
+
+  it('eats with its front, and catches with its whole sac', () => {
+    const rotifer = makePredator(water, { kind: 'rotifer', fx: 0, fy: 0, heading: 0, random: still });
+    const [head, body] = rotifer.body();
+    expect(rotifer.head()).toEqual(head);
+    expect(head[0]).toBeGreaterThan(0);
+    expect(body[0]).toBeLessThan(0);
+  });
+
+  it('cruises smoothly, its speed barely rising and falling', () => {
+    expect(PREDATORS.rotifer.surge).toBeLessThan(PREDATORS.cyclops.surge);
+    expect(PREDATORS.rotifer.surge).toBeGreaterThan(0);
+  });
+});

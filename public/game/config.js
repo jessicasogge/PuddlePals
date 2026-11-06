@@ -44,6 +44,23 @@ export const SPECIES = {
       [0.3, 0, 0.153],
     ],
   },
+  grace: {
+    scientific: 'Euglena gracilis',
+    color: '#15803d',
+    tile: 'rgba(134, 239, 172, 0.45)',
+    kind: 'euglenoid',
+    // The predatory rotifer Asplanchna eats Euglena in the lab (Maly 1975).
+    predator: 'rotifer',
+    size: 10, // flagellum and all; her body is about 7% long
+    // along her middle, from her pointed back to her rounded front
+    body: [
+      [-0.368, 0, 0.035],
+      [-0.236, 0, 0.074],
+      [-0.104, 0, 0.098],
+      [0.027, 0, 0.104],
+      [0.159, 0, 0.079],
+    ],
+  },
 };
 
 // Each level: how many bacteria your pal has to eat herself to finish it
@@ -59,15 +76,20 @@ export const LEVELS = [
 
 // Each pal's predator (game/predator.js): what the directions call it; how
 // wide it's drawn, as a percent of the puddle (the Cyclops is 1.4 times as
-// long as it is wide, the roundworm 4 times); how much its speed rises and
-// falls through each stroke; and how fast it can turn, in radians per
-// second. The Cyclops swims in strokes; the roundworm glides along at a
-// steady pace and curves round gently.
+// long as it is wide, the roundworm 4 times, the rotifer 1.5 times); how
+// much its speed rises and falls through each stroke; and how fast it can
+// turn, in radians per second. The Cyclops swims in strokes; the roundworm
+// glides along at a steady pace and curves round gently; the rotifer
+// cruises along smoothly.
 export const PREDATORS = {
   cyclops: { name: 'Cyclops', size: 10, surge: 0.25, turn: 2.4 },
   // 15% long: about twice as long as Amy (7%), as a predatory roundworm
   // that eats amoebae like her would be.
   roundworm: { name: 'predatory roundworm', size: 3.75, surge: 0, turn: 1.4 },
+  // 15% long, about the same room as the others: about twice Grace's body.
+  // A real Asplanchna is more like 10 times her length or more; that's
+  // scaled down so she can still play.
+  rotifer: { name: 'predatory rotifer', size: 10, surge: 0.1, turn: 1.6 },
 };
 
 // How every predator moves (each kind's surge and turn are above): slower

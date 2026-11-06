@@ -19,6 +19,7 @@ Watch out for your pal's **predator**. It's bigger than her and swims smoothly a
 |---|---|
 | Amy | A **predatory roundworm**: a slender, pale worm, tapered at both ends. Nematodes are listed among *Amoeba proteus*'s predators; it's not meant as any one named species, and the way it patrols is the game's own. |
 | Pam | A **Cyclops**: a copepod, a tiny one-eyed crustacean that hunts protists. |
+| Grace | A **predatory rotifer** like *Asplanchna*: a see-through sac with a crown of beating cilia. In a lab study (Maly 1975), *Asplanchna* ate *Euglena* but couldn't survive on it alone. A real one is roughly ten times Grace's length or more; the game draws it about twice her length, the same room as the other predators, so she can still play. |
 
 There are five levels. Each one takes 5 more bacteria than the last (20, 25, 30, 35, then 40), with one predator on level 1, two on level 2, and so on up to five on level 5. The numbers are in `public/game/config.js` (`LEVELS`, `PREDATORS`, `PREDATOR` and `GAME`).
 
@@ -28,6 +29,7 @@ There are five levels. Each one takes 5 more bacteria than the last (20, 25, 30,
 |---|---|---|
 | **Amy** | *Amoeba proteus* | Lilac blob reaching out with rounded pseudopods |
 | **Pam** | *Paramecium caudatum* | Pink slipper fringed with beating cilia |
+| **Grace** | *Euglena gracilis* | Green spindle with a red eyespot and one long whipping flagellum |
 
 To add a pal: add her drawing to `public/game/pals.js`, her species to `public/game/config.js`, and her quiz facts to `public/game/quiz-facts.js`.
 

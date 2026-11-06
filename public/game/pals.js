@@ -64,6 +64,45 @@ const starVacuole = (cx, cy) =>
     return `<path d="M${(cx + 5 * Math.cos(a)).toFixed(1)} ${(cy + 5 * Math.sin(a)).toFixed(1)} L${(cx + 10 * Math.cos(a)).toFixed(1)} ${(cy + 10 * Math.sin(a)).toFixed(1)}" />`;
   }).join('');
 
+// Grace's spindle-shaped outline, facing right: rounded at the front,
+// tapering to a point at the back. `angle` goes round her from the front
+// (0), down her underside, to the back (π) and over her top.
+const GRACE = { x: 96, y: 100, half: 62 };
+const graceHeight = (front) => 24 * (0.12 + 0.88 * Math.sqrt((1 + front) / 2));
+function gracePoint(angle) {
+  const front = Math.cos(angle);
+  return [GRACE.x + GRACE.half * front, GRACE.y + graceHeight(front) * Math.sin(angle)];
+}
+const graceOutline = () => {
+  const points = Array.from({ length: 90 }, (_, i) => gracePoint((2 * Math.PI * i) / 90));
+  return `M${points.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join(' L')} Z`;
+};
+// How far her outline is above (and below) her middle at `x`.
+const graceHalf = (x) => {
+  const front = Math.max(-1, Math.min(1, (x - GRACE.x) / GRACE.half));
+  return graceHeight(front) * Math.sqrt(1 - front * front);
+};
+// Her pellicle: strips that spiral around her, drawn as slanting stripes.
+const GRACE_STRIPES = Array.from({ length: 7 }, (_, i) => {
+  const x = 52 + i * 14;
+  const top = GRACE.y - graceHalf(x) * 0.85;
+  const bottom = GRACE.y + graceHalf(x + 10) * 0.85;
+  return `M${x} ${top.toFixed(1)} L${x + 10} ${bottom.toFixed(1)}`;
+}).join(' ');
+
+// Her one long flagellum, out of the front of her, whipping in a wave. SVG
+// <animate>, so it beats on the home page and in the puddle, but not on the
+// picker or with reduced motion (drawing() below).
+const FLAGELLUM = { x: 157, y: 98, length: 40, beat: '0.6s' };
+const graceFlagellum = (wave) => {
+  const { x, y, length } = FLAGELLUM;
+  const at = (t, w) => `${(x + length * t).toFixed(1)} ${(y - 4 * t + w).toFixed(1)}`;
+  return `M${x} ${y} C${at(0.33, wave)} ${at(0.66, -wave)} ${at(1, wave / 2)}`;
+};
+const GRACE_FLAGELLUM = `<path d="${graceFlagellum(8)}" fill="none" stroke="#15803d" stroke-width="2.4" stroke-linecap="round">` +
+  `<animate attributeName="d" dur="${FLAGELLUM.beat}" repeatCount="indefinite" ` +
+  `values="${[8, 2, -8, -2, 8].map(graceFlagellum).join(';')}" /></path>`;
+
 export const PALS = [
   // Amy: Amoeba proteus, a lilac blob with pseudopods, a nucleus, a
   // contractile vacuole and a green bit of algae in a food vacuole
@@ -141,6 +180,49 @@ export const PALS = [
         <ellipse cx="140" cy="106" rx="5" ry="3" fill="#f9a8d4" opacity="0.95" />
         <ellipse cx="168" cy="106" rx="5" ry="3" fill="#f9a8d4" opacity="0.95" />
         <path d="M150 105 Q154.5 109 159 105" stroke="#500724" stroke-width="2.5" fill="none" stroke-linecap="round" />
+      </g>
+    `,
+  },
+  // Grace: Euglena gracilis, a green spindle with one long flagellum, a red
+  // eyespot, green chloroplasts, paramylon grains and a spiral pellicle
+  {
+    id: 'grace',
+    name: 'Grace',
+    looks: 'a green spindle-shaped Euglena gracilis with a red eyespot and one long whipping flagellum',
+    motion: 'wobble',
+    // She's long and low, flagellum and all, so her home and puddle frames
+    // are wide and short.
+    frames: { home: '20 60 182 80', picker: '20 10 182 182', puddle: '24 66 182 68' },
+    homeWidth: 170,
+    art: `
+      ${GRACE_FLAGELLUM}
+      <!-- her body: a spindle, with the strips of her pellicle spiraling round it -->
+      <path d="${graceOutline()}" fill="#bbf7d0" stroke="#15803d" stroke-width="3.5" stroke-linejoin="round" />
+      <path d="${GRACE_STRIPES}" stroke="#86efac" stroke-width="1.5" stroke-linecap="round" fill="none" />
+      <!-- chloroplasts, for making food from sunlight -->
+      <g fill="#4ade80" stroke="#16a34a" stroke-width="1">
+        <ellipse cx="62" cy="96" rx="5" ry="3" />
+        <ellipse cx="78" cy="106" rx="5.5" ry="3" transform="rotate(20 78 106)" />
+        <ellipse cx="88" cy="90" rx="5.5" ry="3" transform="rotate(-15 88 90)" />
+        <ellipse cx="104" cy="111" rx="5.5" ry="3" />
+        <ellipse cx="116" cy="88" rx="5" ry="3" transform="rotate(10 116 88)" />
+        <ellipse cx="72" cy="88" rx="4" ry="2.5" />
+      </g>
+      <!-- paramylon grains, her stored food -->
+      <ellipse cx="94" cy="102" rx="3.5" ry="2" fill="white" stroke="#86efac" stroke-width="0.8" />
+      <ellipse cx="66" cy="104" rx="3" ry="1.8" fill="white" stroke="#86efac" stroke-width="0.8" />
+      <!-- the nucleus -->
+      <circle cx="104" cy="98" r="7" fill="#dcfce7" stroke="#15803d" stroke-width="1.5" />
+      <!-- the red eyespot, near where her flagellum comes out -->
+      <ellipse cx="148" cy="92" rx="3.2" ry="2.4" fill="#dc2626" />
+      <g class="face">
+        <circle cx="126" cy="98" r="4.5" fill="#14532d" />
+        <circle cx="139" cy="98" r="4.5" fill="#14532d" />
+        <circle cx="127.5" cy="96.5" r="1.6" fill="white" />
+        <circle cx="140.5" cy="96.5" r="1.6" fill="white" />
+        <ellipse cx="120" cy="107" rx="4.5" ry="2.6" fill="#f9a8d4" opacity="0.9" />
+        <ellipse cx="145" cy="107" rx="4.5" ry="2.6" fill="#f9a8d4" opacity="0.9" />
+        <path d="M128.5 106 Q132.5 109.5 136.5 106" stroke="#14532d" stroke-width="2.2" fill="none" stroke-linecap="round" />
       </g>
     `,
   },

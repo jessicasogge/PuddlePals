@@ -258,14 +258,15 @@ describe("the rotifer, Grace's predator", () => {
     }
   });
 
-  it("is the biggest predator, several times Grace's length, but still smaller than a real one would be", () => {
+  it("is about twice Grace's length, taking about as much room as the other predators", () => {
     // Grace's body is about 68% of her drawing's width (the rest is her flagellum).
     const grace = SPECIES.grace.size * 0.68;
     const rotifer = PREDATORS.rotifer.size * 1.5;
-    expect(rotifer / grace).toBeGreaterThanOrEqual(3);
-    expect(rotifer / grace).toBeLessThan(10);
-    expect(rotifer).toBeGreaterThan(PREDATORS.cyclops.size * 1.4);
-    expect(rotifer).toBeGreaterThan(PREDATORS.roundworm.size * 4);
+    expect(rotifer / grace).toBeGreaterThanOrEqual(2);
+    expect(rotifer / grace).toBeLessThan(3);
+    // Within a few percent of the puddle of the Cyclops's and the roundworm's lengths.
+    expect(Math.abs(rotifer - PREDATORS.cyclops.size * 1.4)).toBeLessThan(3);
+    expect(Math.abs(rotifer - PREDATORS.roundworm.size * 4)).toBeLessThan(3);
   });
 
   it('eats with its front, and catches with its whole sac', () => {

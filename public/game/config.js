@@ -86,9 +86,10 @@ export const PREDATORS = {
   // 15% long: about twice as long as Amy (7%), as a predatory roundworm
   // that eats amoebae like her would be.
   roundworm: { name: 'predatory roundworm', size: 3.75, surge: 0, turn: 1.4 },
-  // 24% long: about 3.5 times Grace's body. A real Asplanchna is more like
-  // 10 times her length or more; that's scaled down so she can still play.
-  rotifer: { name: 'predatory rotifer', size: 16, surge: 0.1, turn: 1.6 },
+  // 15% long, about the same room as the others: about twice Grace's body.
+  // A real Asplanchna is more like 10 times her length or more; that's
+  // scaled down so she can still play.
+  rotifer: { name: 'predatory rotifer', size: 10, surge: 0.1, turn: 1.6 },
 };
 
 // How every predator moves (each kind's surge and turn are above): slower

@@ -5,6 +5,9 @@
 //   roundworm  Amy's: a predatory roundworm (a nematode), not any one named
 //              species. Nematodes are listed among Amoeba proteus's
 //              predators; how it patrols here is the game's own.
+//   rotifer    Grace's: a predatory rotifer like Asplanchna, which eats
+//              Euglena in the lab, though it can't live on Euglena alone
+//              (Maly 1975).
 // Both swim smoothly in gentle strokes and go after her offspring unless
 // she comes too close. Catching your pal is game over; any offspring its
 // head touches, it eats, then it stops to digest.
@@ -78,6 +81,41 @@ const ROUNDWORM_ART = `
       <path d="M18.2 22 Q20 20.8 21.8 22" fill="none" stroke="#5b4630" stroke-width="1" stroke-linecap="round" />
     </g>`;
 
+// The rotifer: a see-through sac, like Asplanchna, drawn head up in a
+// 100 x 150 box. The crown of cilia at its front (the corona) beats in a
+// wave that runs across it, so it looks like spinning wheels; inside are
+// its jaws (the mastax), its stomach and a red eyespot.
+const CORONA = 22; // cilia on its crown
+const coronaY = (x) => 34 - 8 * Math.sin((Math.PI * ((x - 20) % 30)) / 30);
+const ROTIFER_CILIA = Array.from({ length: CORONA }, (_, i) => {
+  const x = 20 + (60 * (i + 0.5)) / CORONA;
+  const y = coronaY(x);
+  const d = (swing) => `M${x.toFixed(1)} ${y.toFixed(1)} L${(x + swing).toFixed(1)} ${(y - 12).toFixed(1)}`;
+  return `<path d="${d(4)}"><animate attributeName="d" dur="0.5s" begin="-${((i / CORONA) * 0.5).toFixed(3)}s" ` +
+    `repeatCount="indefinite" values="${d(4)};${d(-4)};${d(4)}" /></path>`;
+}).join('');
+const crownEdge = Array.from({ length: 31 }, (_, i) => {
+  const x = 20 + 2 * i;
+  return `${x} ${coronaY(x).toFixed(1)}`;
+}).join(' L');
+const ROTIFER_ART = `
+    <!-- the corona: a crown of cilia beating like spinning wheels -->
+    <g class="corona" stroke="#334155" stroke-width="2.2" stroke-linecap="round">${ROTIFER_CILIA}</g>
+    <!-- its body: a see-through sac -->
+    <path d="M20 34 L${crownEdge} C94 60 96 105 74 128 C62 142 38 142 26 128 C4 105 6 60 20 34 Z" fill="#f0f9ff" fill-opacity="0.8" stroke="#64748b" stroke-width="2.5" stroke-linejoin="round" />
+    <!-- its stomach, with green bits in it -->
+    <ellipse cx="50" cy="108" rx="21" ry="20" fill="#e7d9a8" stroke="#a8925a" stroke-width="1.5" />
+    <circle cx="44" cy="104" r="3" fill="#86c46d" /><circle cx="56" cy="113" r="2.5" fill="#86c46d" />
+    <!-- a red eyespot -->
+    <circle cx="50" cy="44" r="2.5" fill="#dc2626" />
+    <!-- a cross little face, with its jaws (the mastax) for a mouth -->
+    <g class="predator-face">
+      <circle cx="38" cy="56" r="4.5" fill="#334155" /><circle cx="62" cy="56" r="4.5" fill="#334155" />
+      <circle cx="39.6" cy="54.4" r="1.5" fill="white" /><circle cx="63.6" cy="54.4" r="1.5" fill="white" />
+      <path d="M30 47 L41 51 M70 47 L59 51" stroke="#334155" stroke-width="2.4" stroke-linecap="round" />
+      <path d="M42 68 Q50 76 46 82 M58 68 Q50 76 54 82" fill="none" stroke="#334155" stroke-width="3" stroke-linecap="round" />
+    </g>`;
+
 // Each kind: its drawing and the box it's drawn in (head up, its middle at
 // half the height), its outline as circles [forward, radius] along its
 // middle in drawing units (the first is its head, which eats), what the
@@ -100,6 +138,14 @@ export const KINDS = {
     outline: points(0.08, 0.92, 6).map((t) => [80 - wormY(t), wormWidth(t) + wormSway(t) / 2]),
     caught: (name) => `A predatory roundworm caught ${name}! Some small roundworms eat amoebae like ${name}.`,
     plural: 'roundworms',
+  },
+  rotifer: {
+    art: ROTIFER_ART,
+    box: [100, 150],
+    // Its crown and front (its head, which eats) and its sac of a body.
+    outline: [[75 - 50, 30], [75 - 100, 34]],
+    caught: (name) => `A predatory rotifer caught ${name}! Rotifers like Asplanchna eat Euglena, though they can't live on Euglena alone.`,
+    plural: 'rotifers',
   },
 };
 
